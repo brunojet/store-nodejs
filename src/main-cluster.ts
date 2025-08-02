@@ -1,7 +1,7 @@
 import cluster from 'cluster';
 import os from 'os';
 
-import { startServer } from './server.js'; // Adjust the import path as necessary
+import {startServer} from './server.js';  // Adjust the import path as necessary
 
 const numCPUs = os.cpus().length;
 

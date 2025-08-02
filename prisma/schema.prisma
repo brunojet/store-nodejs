@@ -48,15 +48,28 @@ model TipoCategoria {
 }
 
 model CategoriaAplicativo {
-    id              Int                   @id @default(autoincrement()) @map("id")
-    nome            String                @unique
-    tipoCategoriaId Int                   @map("tipo_classificacao_id")
-    tipCategoria    TipoCategoria         @relation(fields: [tipoCategoriaId], references: [id])
-    paiId           Int?                  @map("pai_id")
-    pai             CategoriaAplicativo?  @relation("CategoriaPai", fields: [paiId], references: [id])
-    filhos          CategoriaAplicativo[] @relation("CategoriaPai")
+    id                           Int                            @id @default(autoincrement()) @map("id")
+    nome                         String                         @unique
+    tipoCategoriaId              Int                            @map("tipo_classificacao_id")
+    tipCategoria                 TipoCategoria                  @relation(fields: [tipoCategoriaId], references: [id])
+    paiId                        Int?                           @map("pai_id")
+    pai                          CategoriaAplicativo?           @relation("CategoriaPai", fields: [paiId], references: [id])
+    filhos                       CategoriaAplicativo[]          @relation("CategoriaPai")
+    CategoriaAplicativoHistorico CategoriaAplicativoHistorico[]
 
     @@map("categoria_aplicativo")
+}
+
+model CategoriaAplicativoHistorico {
+    id                    Int                 @id @default(autoincrement())
+    aplicativo            Aplicativo          @relation(fields: [aplicativoId], references: [id])
+    aplicativoId          Int                 @map("aplicativo_id")
+    categoriaAplicativo   CategoriaAplicativo @relation(fields: [categoriaAplicativoId], references: [id])
+    categoriaAplicativoId Int                 @map("categoria_aplicativo_id")
+
+    @@unique([aplicativoId, categoriaAplicativoId])
+    // Campos de rastreio podem ser adicionados aqui (usuario, data, etc)
+    @@map("categoria_aplicativo_historico")
 }
 
 model Anexo {
@@ -88,13 +101,14 @@ model DetalheAplicativoHistorico {
 }
 
 model Aplicativo {
-    id                          Int                           @id @default(autoincrement()) @map("id")
-    codigoParceiro              String                        @unique @map("codigo_parceiro")
-    codigoProduto               String                        @map("codigo_produto")
-    contatoParceiroId           Int?                          @map("contato_parceiro_id")
-    contatoParceiro             ContatoParceiroHistorico?     @relation(fields: [contatoParceiroId], references: [id])
-    cadastroAplicativoHistorico CadastroAplicativoHistorico[]
-    configuracaoAplicativo      ConfiguracaoAplicativo[]
+    id                           Int                            @id @default(autoincrement()) @map("id")
+    codigoParceiro               String                         @unique @map("codigo_parceiro")
+    codigoProduto                String                         @map("codigo_produto")
+    contatoParceiroId            Int?                           @map("contato_parceiro_id")
+    contatoParceiro              ContatoParceiroHistorico?      @relation(fields: [contatoParceiroId], references: [id])
+    cadastroAplicativoHistorico  CadastroAplicativoHistorico[]
+    configuracaoAplicativo       ConfiguracaoAplicativo[]
+    CategoriaAplicativoHistorico CategoriaAplicativoHistorico[]
 
     @@index([codigoParceiro])
     @@map("aplicativo")

@@ -5,11 +5,146 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+    provider = "prisma-client-js"
+    output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum EstagioCatalogo {
+    REVIEW
+    PILOTO
+    PRODUCAO
+}
+
+// Configure o arquivo .env na raiz do projeto com:
+// DATABASE_URL="postgresql://postgres:postgres@localhost:5432/mystore_db?schema=store_nodejs"
+
+model TerminalModelo {
+    id                     Int                      @id @default(autoincrement()) @map("id")
+    nome                   String                   @map("nome")
+    configuracaoAplicativo ConfiguracaoAplicativo[]
+
+    @@map("terminal_modelo")
+}
+
+model TipoIntegracao {
+    id                     Int                      @id @default(autoincrement())
+    nome                   String                   @unique
+    configuracaoAplicativo ConfiguracaoAplicativo[]
+
+    @@map("tipo_integracao")
+}
+
+model Anexo {
+    id       Int        @id @default(autoincrement()) @map("id")
+    filePath String     @map("file_path")
+    images   AppImage[]
+
+    @@map("anexo")
+}
+
+model AppImage {
+    id                  Int                         @id @default(autoincrement()) @map("id")
+    anexo               Anexo                       @relation(fields: [anexoId], references: [id])
+    anexoId             Int                         @map("anexo_id")
+    versaoAplicativo    VersaoAplicativo[]          @relation("versao_aplicativo_icone")
+    detalheAplicativo   DetalheAplicativoHistorico? @relation(fields: [detalheAplicativoId], references: [id])
+    detalheAplicativoId Int?                        @map("detalhes_aplicativo_id")
+
+    @@map("app_image")
+}
+
+model DetalheAplicativoHistorico {
+    id                 Int                           @id @default(autoincrement()) @map("id")
+    descricao          String                        @map("descricao")
+    images             AppImage[]
+    cadastroAplicativo CadastroAplicativoHistorico[]
+
+    @@map("detalhe_aplicativo_historico")
+}
+
+model Aplicativo {
+    id                          Int                           @id @default(autoincrement()) @map("id")
+    codigoParceiro              String                        @unique @map("codigo_parceiro")
+    codigoProduto               String                        @map("codigo_produto")
+    contatoParceiroId           Int?                          @map("contato_parceiro_id")
+    contatoParceiro             ContatoParceiroHistorico?     @relation(fields: [contatoParceiroId], references: [id])
+    cadastroAplicativoHistorico CadastroAplicativoHistorico[]
+    configuracaoAplicativo      ConfiguracaoAplicativo[]
+
+    @@index([codigoParceiro])
+    @@map("aplicativo")
+}
+
+model ContatoParceiroHistorico {
+    id             Int          @id @default(autoincrement())
+    codigoParceiro String       @map("codigo_parceiro")
+    descricao      String       @map("descricao")
+    nome           String
+    email          String
+    telefone       String
+    aplicativo     Aplicativo[]
+
+    @@map("contato_parceiro_historico")
+}
+
+model CadastroAplicativoHistorico {
+    id                   Int                        @id @default(autoincrement()) @map("id")
+    aplicativo           Aplicativo                 @relation(fields: [aplicativoId], references: [id])
+    aplicativoId         Int                        @map("aplicativo_id")
+    detalhesAplicativo   DetalheAplicativoHistorico @relation(fields: [detalhesAplicativoId], references: [id])
+    detalhesAplicativoId Int                        @map("detalhes_aplicativo_id")
+    VersaoAplicativo     VersaoAplicativo[]
+
+    @@index([aplicativoId])
+    @@map("cadastro_aplicativo_historico")
+}
+
+model ConfiguracaoAplicativo {
+    id               Int                @id @default(autoincrement()) @map("id")
+    nomePacoteApp    String             @map("nome_pacote_app")
+    tipoIntegracaoId Int                @map("tipo_integracao_id")
+    tipoIntegracao   TipoIntegracao     @relation(fields: [tipoIntegracaoId], references: [id])
+    terminalModeloId Int                @map("terminal_modelo_id")
+    terminalModelo   TerminalModelo     @relation(fields: [terminalModeloId], references: [id])
+    aplicativoId     Int                @map("aplicativo_id")
+    aplicativo       Aplicativo         @relation(fields: [aplicativoId], references: [id])
+    versaoAplicativo VersaoAplicativo[]
+
+    @@map("configuracao_aplicativo")
+}
+
+model VersaoAplicativo {
+    id                       Int                         @id @default(autoincrement()) @map("id")
+    icone                    AppImage                    @relation("versao_aplicativo_icone", fields: [iconeId], references: [id])
+    iconeId                  Int                         @map("icone_id")
+    versao                   String                      @map("versao")
+    changelog                String                      @map("changelog")
+    tamanho                  String                      @map("tamanho")
+    avaliacao                Float                       @map("avaliacao")
+    configuracaoAplicativoId Int                         @map("configuracao_aplicativo_id")
+    configuracaoAplicativo   ConfiguracaoAplicativo      @relation(fields: [configuracaoAplicativoId], references: [id])
+    cadastroAplicativoId     Int                         @map("cadastro_aplicativo_id")
+    cadastroAplicativo       CadastroAplicativoHistorico @relation(fields: [cadastroAplicativoId], references: [id])
+    pacoteMdm                String                      @map("pacote_mdm")
+    versaoMdm                String                      @map("versao_mdm")
+    catalogoAplicativo       CatalogoAplicativo[]
+
+    @@map("versao_aplicativo")
+    @@index([configuracaoAplicativoId])
+}
+
+model CatalogoAplicativo {
+    id                 Int              @id @default(autoincrement()) @map("id")
+    tipoEstagio        EstagioCatalogo  @default(REVIEW) @map("tipo_estagio")
+    versaoAplicativo   VersaoAplicativo @relation(fields: [versaoAplicativoId], references: [id])
+    versaoAplicativoId Int              @map("versao_aplicativo_id")
+
+    @@index([tipoEstagio, versaoAplicativoId])
+    @@index([versaoAplicativoId])
+    @@map("catalogo_aplicativo")
 }

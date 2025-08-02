@@ -1,0 +1,1 @@
+{"root":["./src/app.ts","./src/main-cluster.ts","./src/server.ts","./src/__tests__/prisma.integration.test.ts"],"version":"5.9.2"}

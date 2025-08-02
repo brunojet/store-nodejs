@@ -16,7 +16,7 @@ export function startServer(): void {
   app.use(express.urlencoded({extended: true}));
 
   // Rotas
-  app.use(healthRouter);
+  app.use('/health', healthRouter);
 
   app.listen(port, () => {
     console.log(`Worker ${process.pid} started on port ${port}`);

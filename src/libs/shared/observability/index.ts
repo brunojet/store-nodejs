@@ -198,13 +198,21 @@ export function LogMethod(level: LogLevel = LogLevel.INFO) {
   };
 }
 
+
+// ========================================
+// Default Implementations
+// ========================================
+
+export {ConsoleLogger} from './ConsoleLogger.js';
+
 // ========================================
 // Observability Singleton
 // ========================================
 
-/**
- * Singleton de observabilidade
- */
+import {ConsoleLogger} from './ConsoleLogger.js';
+import {NoOpMetricsCollector} from './NoOpMetricsCollector.js';
+import {NoOpTracer} from './NoOpTracer.js';
+
 class ObservabilityManager {
   private _logger: StructuredLogger;
   private _metrics: MetricsCollector;
@@ -243,66 +251,8 @@ class ObservabilityManager {
 
 export const Observability = new ObservabilityManager();
 
-// ========================================
-// Default Implementations
-// ========================================
-
-/**
- * Logger console simples
- */
-class ConsoleLogger implements StructuredLogger {
-  info(message: string, context?: LogContext): void {
-    console.log(JSON.stringify({level: 'info', message, timestamp: new Date().toISOString(), ...context}));
-  }
-
-  warn(message: string, context?: LogContext): void {
-    console.warn(JSON.stringify({level: 'warn', message, timestamp: new Date().toISOString(), ...context}));
-  }
-
-  error(message: string, error?: Error, context?: LogContext): void {
-    console.error(JSON.stringify({
-      level: 'error',
-      message,
-      error: error?.message,
-      stack: error?.stack,
-      timestamp: new Date().toISOString(),
-      ...context
-    }));
-  }
-
-  debug(message: string, context?: LogContext): void {
-    console.debug(JSON.stringify({level: 'debug', message, timestamp: new Date().toISOString(), ...context}));
-  }
-}
-
-/**
- * Metrics collector no-op (placeholder)
- */
-class NoOpMetricsCollector implements MetricsCollector {
-  counter(): void {}
-  gauge(): void {}
-  histogram(): void {}
-  timing(): void {}
-}
-
-/**
- * Tracer no-op (placeholder)
- */
-class NoOpTracer implements DistributedTracer {
-  startSpan(operationName: string): TraceSpan {
-    return {
-      traceId: crypto.randomUUID(),
-      spanId: crypto.randomUUID(),
-      operationName,
-      startTime: new Date(),
-      status: 'ok'
-    };
-  }
-
-  finishSpan(): void {}
-  addLog(): void {}
-  addTag(): void {}
-}
+export {NoOpMetricsCollector} from './NoOpMetricsCollector.js';
+export {NoOpTracer} from './NoOpTracer.js';
 
 // ========================================
 // Utility Functions

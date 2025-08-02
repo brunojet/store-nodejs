@@ -39,6 +39,26 @@ model TipoIntegracao {
     @@map("tipo_integracao")
 }
 
+model TipoCategoria {
+    id                  Int                   @id @default(autoincrement())
+    nome                String                @unique
+    CategoriaAplicativo CategoriaAplicativo[]
+
+    @@map("tipo_classificacao")
+}
+
+model CategoriaAplicativo {
+    id              Int                   @id @default(autoincrement()) @map("id")
+    nome            String                @unique
+    tipoCategoriaId Int                   @map("tipo_classificacao_id")
+    tipCategoria    TipoCategoria         @relation(fields: [tipoCategoriaId], references: [id])
+    paiId           Int?                  @map("pai_id")
+    pai             CategoriaAplicativo?  @relation("CategoriaPai", fields: [paiId], references: [id])
+    filhos          CategoriaAplicativo[] @relation("CategoriaPai")
+
+    @@map("categoria_aplicativo")
+}
+
 model Anexo {
     id       Int        @id @default(autoincrement()) @map("id")
     filePath String     @map("file_path")
@@ -98,7 +118,7 @@ model CadastroAplicativoHistorico {
     aplicativoId         Int                        @map("aplicativo_id")
     detalhesAplicativo   DetalheAplicativoHistorico @relation(fields: [detalhesAplicativoId], references: [id])
     detalhesAplicativoId Int                        @map("detalhes_aplicativo_id")
-    VersaoAplicativo     VersaoAplicativo[]
+    versaoAplicativo     VersaoAplicativo[]
 
     @@index([aplicativoId])
     @@map("cadastro_aplicativo_historico")
@@ -134,8 +154,8 @@ model VersaoAplicativo {
     versaoMdm                String                      @map("versao_mdm")
     catalogoAplicativo       CatalogoAplicativo[]
 
-    @@map("versao_aplicativo")
     @@index([configuracaoAplicativoId])
+    @@map("versao_aplicativo")
 }
 
 model CatalogoAplicativo {

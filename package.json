@@ -6,7 +6,20 @@
     "prisma:generate": "prisma generate",
     "build": "npm run prisma:generate && tsc -b",
     "postinstall": "npm run prisma:generate",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage",
+    "test:watch": "jest --watchAll",
+    "test:ci": "jest --ci --reporters=default --reporters=jest-junit"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.test.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/__tests__/**"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -24,5 +37,11 @@
     "prisma": "^6.13.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.5",
+    "jest-junit": "^16.0.0",
+    "ts-jest": "^29.4.0"
   }
 }

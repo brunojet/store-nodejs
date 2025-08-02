@@ -5,33 +5,48 @@ Esta estrutura visa garantir modularidade, isolamento de domínios e facilidade 
 ```
 store-nodejs/
 │
-├── apps/
-│   ├── store-api/              # API da loja (POS Android e loja web logada)
-│   ├── backoffice-api/         # API do backoffice/admin
-│   ├── public-api/             # API pública (marketplace, parceiros, etc)
-│   └── ... (outros apps)
+├── src/
+│   ├── apps/
+│   │   ├── store-api/              # API da loja (POS Android e loja web logada)
+│   │   ├── backoffice-api/         # API do backoffice/admin
+│   │   ├── public-api/             # API pública (marketplace, parceiros, etc)
+│   │   └── ... (outros apps)
+│   │
+│   ├── libs/
+│   │   ├── shared/
+│   │   │   ├── repository/         # Contratos, implementações e utilitários de repositórios
+│   │   │   ├── prisma/             # Schema, client e helpers do Prisma ORM
+│   │   │   │   └── generated/      # Prisma Client gerado automaticamente
+│   │   │   ├── auth/               # Autenticação, autorização, middlewares
+│   │   │   ├── dto/                # DTOs, validadores, mapeamentos
+│   │   │   ├── errors/             # Erros comuns e tratamento
+│   │   │   ├── observability/      # Logs estruturados, métricas, tracing (observabilidade)
+│   │   │   └── utils/              # Funções utilitárias, helpers
+│   │   ├── domain-store/           # Lógica de domínio da loja (POS e web logada)
+│   │   ├── domain-backoffice/      # Lógica de domínio do backoffice/admin
+│   │   ├── domain-marketplace/     # Lógica de domínio do marketplace
+│   │   └── ... (outros domínios)
+│   │
+│   ├── tools/                      # Scripts, geradores, automações Nx
+│   └── prisma/                     # Schema global, seeds, migrations
 │
-├── libs/
-│   ├── shared/
-│   │   ├── repository/         # Contratos, implementações e utilitários de repositórios
-│   │   ├── prisma/             # Schema, client e helpers do Prisma ORM
-│   │   ├── auth/               # Autenticação, autorização, middlewares
-│   │   ├── dto/                # DTOs, validadores, mapeamentos
-│   │   ├── errors/             # Erros comuns e tratamento
-│   │   ├── observability/      # Logs estruturados, métricas, tracing (observabilidade)
-│   │   └── utils/              # Funções utilitárias, helpers
-│   ├── domain-store/           # Lógica de domínio da loja (POS e web logada)
-│   ├── domain-backoffice/      # Lógica de domínio do backoffice/admin
-│   ├── domain-marketplace/     # Lógica de domínio do marketplace
-│   └── ... (outros domínios)
-│
-├── tools/                      # Scripts, geradores, automações Nx
-├── prisma/                     # Schema global, seeds, migrations
 ├── package.json
 ├── nx.json
 ├── tsconfig.base.json
 └── ...
 ```
+## Configuração do Prisma Client no Nx
+
+Para garantir que o Prisma gere o client no local esperado pelo Nx, configure o bloco generator no seu `schema.prisma` assim:
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "./src/libs/shared/prisma/generated"
+}
+```
+
+Assim, o Prisma Client ficará disponível para todos os apps/libs via importação centralizada.
 
 ## Princípios
 - **Isolamento de domínios:** Cada contexto de negócio (POS, backoffice, marketplace) tem seu próprio módulo.

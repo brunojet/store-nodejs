@@ -1,21 +1,39 @@
 
 
+
+import os from 'os';
 import type {HealthCheck, HealthCheckProvider} from './types.js';
+
 
 export class DiskSpaceHealthCheck implements HealthCheckProvider {
   public readonly name = 'disk_space';
-  constructor(private readonly path: string = '.') {}
+  private static winDrivePath: string|null = null;
+  private readonly resolvedPath: string;
+  constructor(path: string = '.') {
+    let pathToCheck = path;
+    if (os.platform() === 'win32') {
+      if (!/^([a-zA-Z]:\\)$/.test(pathToCheck)) {
+        if (DiskSpaceHealthCheck.winDrivePath === null || DiskSpaceHealthCheck.winDrivePath === undefined ||
+            DiskSpaceHealthCheck.winDrivePath === '') {
+          const cwd = process.cwd();
+          const match = cwd.match(/^([a-zA-Z]:)\\/);
+          DiskSpaceHealthCheck.winDrivePath = match ? match[1] + '\\' : 'C:\\';
+        }
+        pathToCheck = DiskSpaceHealthCheck.winDrivePath;
+      }
+    }
+    this.resolvedPath = pathToCheck;
+  }
 
   public async check(): Promise<HealthCheck> {
     try {
-      // Import dinâmico e tipagem segura para evitar erro de lint/type
       const mod = await import('check-disk-space');
       type DiskSpaceFn = (path: string) => Promise<{free: number; size: number}>;
       if (typeof mod.default !== 'function') {
         throw new Error('check-disk-space does not export a default function');
       }
       const checkDiskSpace: DiskSpaceFn = mod.default as unknown as DiskSpaceFn;
-      const info = await checkDiskSpace(this.path);
+      const info = await checkDiskSpace(this.resolvedPath);
       const totalMB = Math.round(info.size / 1024 / 1024);
       const freeMB = Math.round(info.free / 1024 / 1024);
       const usedMB = totalMB - freeMB;
@@ -24,7 +42,7 @@ export class DiskSpaceHealthCheck implements HealthCheckProvider {
         name: this.name,
         status: freeMB < 1024 ? 'warn' : 'pass',  // <1GB livre = warn
         message: `Disk usage: ${usedMB}MB used / ${totalMB}MB total (${percentUsed}% used)`,
-        details: {path: this.path, totalMB, usedMB, freeMB, percentUsed}
+        details: {path: this.resolvedPath, totalMB, usedMB, freeMB, percentUsed}
       };
     } catch (error) {
       return {

@@ -1,5 +1,17 @@
 # TODO - Análise dos Módulos do Chassis
 
+## Proposta: Health Check Cluster-Aware
+
+Em ambiente cluster (Node.js), cada worker deve executar seu health check periodicamente (ex: a cada 10s) e alimentar um storage global (ex: Redis, banco, arquivo compartilhado) com seu status.
+
+O endpoint `/health` global pode então ler o status de todos os workers/nós e fornecer uma visão consolidada do sistema.
+
+Vantagens:
+- Health check reflete o estado real do cluster, não só do worker corrente.
+- Permite monitoramento proativo e decisões de orquestração mais seguras.
+
+Sugestão: Implementar como middleware opcional, configurável por ambiente.
+
 ## 📋 Status Atual do Chassis
 
 Data: 02/08/2025  

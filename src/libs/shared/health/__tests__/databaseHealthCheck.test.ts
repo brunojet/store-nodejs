@@ -36,6 +36,8 @@ describe('DatabaseHealthCheck', () => {
     expect(result.status).toBe('pass');
     expect(result.name).toBe('database');
     expect(result.message).toMatch(/healthy/i);
+    expect(typeof result.responseTime).toBe('number');
+    expect(result.responseTime).toBeGreaterThanOrEqual(0);
     expect(mockHealthCheck).toHaveBeenCalledTimes(1);
   });
 
@@ -49,6 +51,23 @@ describe('DatabaseHealthCheck', () => {
     expect(result.name).toBe('database');
     expect(result.message).toMatch(/failed/i);
     expect(result.details?.['error']).toBe('fail');
+    expect(typeof result.responseTime).toBe('number');
+    expect(result.responseTime).toBeGreaterThanOrEqual(0);
+    expect(mockHealthCheck).toHaveBeenCalledTimes(1);
+  });
+
+  it('should handle non-Error thrown values', async () => {
+    mockHealthCheck.mockRejectedValue('string error');
+
+    const dbCheck = new DatabaseHealthCheck();
+    const result = await dbCheck.check();
+
+    expect(result.status).toBe('fail');
+    expect(result.name).toBe('database');
+    expect(result.message).toMatch(/failed/i);
+    expect(result.details?.['error']).toBe('Unknown error');
+    expect(typeof result.responseTime).toBe('number');
+    expect(result.responseTime).toBeGreaterThanOrEqual(0);
     expect(mockHealthCheck).toHaveBeenCalledTimes(1);
   });
 });

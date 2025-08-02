@@ -202,6 +202,93 @@ Modelagem: Baseada em schema Prisma com entidades de aplicativos, versões e cat
 
 ---
 
+## 🔄 ESTRATÉGIA REVISADA: Feature-First + Chassis Evolutivo
+
+### 🚨 Problema Identificado
+
+Estamos implementando **bottom-up** (chassis → features) quando deveríamos ser **top-down** (features → chassis).
+
+### 💡 Nova Abordagem: Hybrid Development
+
+#### Fase 1: MVP com Chassis Mínimo (1-2 semanas)
+
+**Objetivo**: Implementar 1 feature completa para validar padrões reais
+
+1. **Chassis mínimo**:
+
+   - ✅ `types/` (já pronto)
+   - ✅ `database/` (já pronto)
+   - ✅ `validation/` (já pronto)
+   - ✅ `utils/` (já pronto)
+   - ✅ `errors/` (básico)
+   - ❌ Ignorar resto temporariamente
+
+2. **Feature piloto**: "Listar Aplicativos no Catálogo"
+   - Controller simples (sem middleware complexo)
+   - Service direto (sem DDD complexo)
+   - Repository Prisma direto (sem abstrações)
+   - Validação simples (sem schemas complexos)
+   - Response direto (sem transformations complexas)
+
+#### Fase 2: Extração de Padrões (1 semana)
+
+**Objetivo**: Identificar padrões reais que emergiram
+
+1. **Analisar código real**:
+
+   - Que abstrações realmente ajudaram?
+   - Que patterns se repetiram?
+   - Onde sentimos falta de algo do chassis?
+
+2. **Refatorar chassis baseado no real**:
+   - Extrair patterns que surgiram naturalmente
+   - Remover módulos que não foram usados
+   - Simplificar o que foi over-engineered
+
+#### Fase 3: Crescimento Incremental
+
+**Objetivo**: Expandir chassis conforme necessidade real
+
+1. **Nova feature** → **Novos patterns** → **Evolução do chassis**
+2. **Regra**: Só adicionar ao chassis quando aparecer 3x no código
+
+### 🎯 Feature Piloto Sugerida: "Listar Aplicativos"
+
+```typescript
+// apps/api/src/routes/aplicativos.ts
+app.get("/aplicativos", async (req, res) => {
+  // Controller direto, sem middleware complexo
+  const { page = 1, limit = 10 } = req.query;
+
+  // Service direto, sem DDD
+  const aplicativos = await prisma.catalogoAplicativo.findMany({
+    where: { tipoEstagio: "PRODUCAO" },
+    include: { versaoAplicativo: true },
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+
+  // Response direto, sem transformations
+  res.json({ success: true, data: aplicativos });
+});
+```
+
+**Benefícios**:
+
+- ✅ Entrega rápida
+- ✅ Aprendizado real sobre o domínio
+- ✅ Validação de padrões com uso real
+- ✅ Chassis evolui organicamente
+
+### 🧪 Experimento: 2 Semanas de Feature-First
+
+**Semana 1**: Implementar 2-3 endpoints básicos  
+**Semana 2**: Refatorar chassis baseado no que realmente usamos
+
+**Hipótese**: Vamos descobrir que 70% do chassis atual é desnecessário e 30% que está faltando.
+
+---
+
 ## 📝 NOTAS TÉCNICAS
 
 - **TypeScript Strict Mode**: ✅ Todos os módulos mantidos estão compliant

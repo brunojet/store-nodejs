@@ -1,4 +1,35 @@
 
+
+
+## Proposta de Escolha de Stack Backend
+
+> **Nota para gestores:** O contexto deste projeto não envolve processamento intensivo, cálculos científicos ou workloads de alta concorrência em tempo real. O foco está em APIs, integrações, automação de processos e governança de dados, com demandas típicas de sistemas corporativos e escalabilidade horizontal. Portanto, stacks como Node.js, Python e Java atendem plenamente aos requisitos de performance e robustez, sem a necessidade de otimizações extremas de baixo nível.
+
+Para apoiar a decisão técnica do stack backend, segue uma tabela comparativa entre as principais opções consideradas para o projeto (Go, Node.js, Python, Java). A tabela considera critérios de FinOps, performance, produtividade, comunidade e facilidade de contratação.
+
+| Critério                | Go (Golang)         | Node.js (TypeScript) | Python (FastAPI)     | Java (Spring Boot)   |
+|-------------------------|---------------------|----------------------|----------------------|----------------------|
+| Performance             | Muito alta          | Alta                 | Média                | Alta                 |
+| Consumo de recursos     | Baixo               | Médio                | Médio                | Médio/Alto           |
+| Produtividade           | Alta                | Muito alta           | Muito alta           | Média                |
+| Curva de aprendizado    | Média               | Baixa                | Baixa                | Alta                 |
+| Comunidade/ecossistema  | Grande              | Muito grande         | Muito grande         | Muito grande         |
+| Facilidade de contratação | Média             | Muito alta           | Muito alta           | Alta                 |
+| Suporte a concorrência  | Excelente           | Bom                  | Bom                  | Excelente            |
+| Maturidade para APIs    | Alta                | Muito alta           | Alta                 | Muito alta           |
+| Linhas de código CRUD*  | 350-450             | 250-350              | 250-350              | 400-500              |
+| Custo operacional (FinOps) | Baixo            | Baixo/Médio          | Baixo/Médio          | Médio                |
+| Observações             | Ideal para alta performance e serviços concorrentes. | Ótimo para APIs rápidas, grande pool de devs. | Excelente para prototipação e IA. | Robusto, usado em grandes empresas. |
+
+*Estimativa para API CRUD completa (autenticação, validação, docs, testes, deploy).
+
+**Recomendação:**
+- Para máxima produtividade e time grande: **Node.js (TypeScript)** ou **Python (FastAPI)**.
+- Para máxima performance/concorrência: **Go**.
+- Para requisitos corporativos, legado ou times já experientes: **Java (Spring Boot)**.
+
+---
+
 ## Diagramas Detalhados: Cadastro e Publicação
 
 ### Fluxo de Cadastro (Mermaid)

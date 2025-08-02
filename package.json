@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "prisma:generate": "prisma generate",
+    "build": "npm run prisma:generate && tsc -b",
+    "postinstall": "npm run prisma:generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

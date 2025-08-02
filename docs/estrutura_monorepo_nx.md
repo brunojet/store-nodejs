@@ -18,6 +18,7 @@ store-nodejs/
 │   │   ├── auth/               # Autenticação, autorização, middlewares
 │   │   ├── dto/                # DTOs, validadores, mapeamentos
 │   │   ├── errors/             # Erros comuns e tratamento
+│   │   ├── observability/      # Logs estruturados, métricas, tracing (observabilidade)
 │   │   └── utils/              # Funções utilitárias, helpers
 │   ├── domain-store/           # Lógica de domínio da loja (POS e web logada)
 │   ├── domain-backoffice/      # Lógica de domínio do backoffice/admin
@@ -34,7 +35,7 @@ store-nodejs/
 
 ## Princípios
 - **Isolamento de domínios:** Cada contexto de negócio (POS, backoffice, marketplace) tem seu próprio módulo.
-- **Shared centralizado:** Tudo que é comum (repositórios, DTOs, autenticação, erros) fica em `libs/shared`.
+- **Shared centralizado:** Tudo que é comum (repositórios, DTOs, autenticação, erros, observabilidade) fica em `libs/shared`.
 - **Repositórios desacoplados:** Contratos e implementações de repositórios ficam em `shared/repository`, facilitando troca de ORM ou extração para microsserviço.
 - **Evolução independente:** Apps e libs podem ser testados, versionados e escalados separadamente.
 - **Pronto para extração:** Qualquer domínio pode ser "fatiado" para um microsserviço no futuro, sem grandes refatorações.
@@ -53,6 +54,7 @@ store-nodejs/
 - `libs/domain-marketplace` lida com lógica de marketplace, exibição pública, integrações externas.
 
 ## Observações
+- Recomenda-se criar um módulo `libs/shared/observability` para centralizar logs estruturados, métricas e tracing, facilitando padronização e integração com ferramentas externas.
 - O Nx permite lint, build, test e deploy por app/lib, com cache e pipelines otimizados.
 - O Prisma pode ser compartilhado ou "fatiado" por domínio, conforme a evolução.
 - Novos domínios ou apps podem ser adicionados facilmente, mantendo a organização.

@@ -43,4 +43,5 @@ if (cluster.isPrimary) {
   // Workers handle multiple API endpoints
   // store-api (POS Android + Web), backoffice-api (Admin), public-api (Marketplace)
   startServer();
+  console.log(`🚀 Worker ${process.pid} ready with health checks`);
 }

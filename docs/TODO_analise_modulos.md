@@ -1,5 +1,71 @@
 # TODO - Análise dos Módulos do Chassis
 
+## 🏭 ANÁLISE: Bibliotecas de Mercado vs Chassis Customizado
+
+### Health Check
+
+- **Nosso chassis**: HealthCheckManager, DatabaseHealthCheck, MemoryHealthCheck, etc
+- **Mercado**:
+  - `@godaddy/terminus` ⭐ **RECOMENDADO** - Graceful shutdown + health checks
+  - `express-healthcheck` - Simples mas básico
+  - `@hapi/good` - Focado em Hapi.js
+  - `lightship` - Kubernetes-focused, mais complexo
+  - Nativo Express - Muito manual
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Health checks são commodities
+
+#### Comparativo Health Check Libraries
+
+| Biblioteca            | Graceful Shutdown | Cluster-Aware | K8s Ready | Manutenção | Popularidade |
+| --------------------- | ----------------- | ------------- | --------- | ---------- | ------------ |
+| **@godaddy/terminus** | ✅                | ✅            | ✅        | Ativa      | 🔥 Alta      |
+| express-healthcheck   | ❌                | ❌            | ⚠️        | Baixa      | Média        |
+| lightship             | ✅                | ✅            | ✅        | Ativa      | Baixa        |
+| @hapi/good            | ✅                | ⚠️            | ⚠️        | Ativa      | Hapi only    |
+
+**Terminus é superior porque:**
+
+- ✅ Graceful shutdown automático em SIGTERM/SIGINT
+- ✅ Funciona nativamente com clusters Node.js
+- ✅ Endpoints Kubernetes-ready (/health/live, /health/ready)
+- ✅ Usado por empresas como GoDaddy, Netflix, Uber
+- ✅ Zero-downtime deployments
+
+### Validation
+
+- **Nosso chassis**: ValidationBuilder, CommonValidators, SchemaValidator
+- **Mercado**: `joi`, `yup`, `zod`, `ajv`, `class-validator`
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Validação é resolvida há anos
+
+### Config Management
+
+- **Nosso chassis**: ConfigurationBuilder complexo
+- **Mercado**: `dotenv`, `config`, `convict`, `env-var`
+- **Veredito**: ❌ **OVER-ENGINEERING** - process.env + dotenv resolve 90%
+
+### Utils (Object/Array/String)
+
+- **Nosso chassis**: deepClone, deepMerge, camelCase, etc
+- **Mercado**: `lodash`, `ramda`, `changeCase`
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Lodash é padrão há décadas
+
+### Observability/Logging
+
+- **Nosso chassis**: StructuredLogger, MetricsCollector
+- **Mercado**: `winston`, `pino`, `prometheus-client`, `opentelemetry`
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Telemetria é ecosystem maduro
+
+### Security
+
+- **Nosso chassis**: Encryption, JWT, hashing
+- **Mercado**: `bcrypt`, `jsonwebtoken`, `crypto-js`, `helmet`
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Segurança não se improvisa
+
+### Events
+
+- **Nosso chassis**: EventBus customizado
+- **Mercado**: `eventemitter2`, `eventemitter3`, Node.js EventEmitter nativo
+- **Veredito**: ❌ **OVER-ENGINEERING** - EventEmitter nativo resolve a maioria
+
 ## Proposta: Health Check Cluster-Aware
 
 Em ambiente cluster (Node.js), cada worker deve executar seu health check periodicamente (ex: a cada 10s) e alimentar um storage global (ex: Redis, banco, arquivo compartilhado) com seu status.
@@ -7,6 +73,7 @@ Em ambiente cluster (Node.js), cada worker deve executar seu health check period
 O endpoint `/health` global pode então ler o status de todos os workers/nós e fornecer uma visão consolidada do sistema.
 
 Vantagens:
+
 - Health check reflete o estado real do cluster, não só do worker corrente.
 - Permite monitoramento proativo e decisões de orquestração mais seguras.
 

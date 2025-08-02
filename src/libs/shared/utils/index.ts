@@ -5,7 +5,7 @@
  */
 
 import {performance} from 'perf_hooks';
-import type {Either, Maybe, Result, ValidationError, ValidationResult} from '../types/index.js';
+import type {Result, ValidationError, ValidationResult} from '../types/index.js';
 
 // ========================================
 // Result Helpers
@@ -42,74 +42,6 @@ export function isFailure<T, E>(result: Result<T, E>): result is {
   error: E
 }
 { return !result.success; }
-
-// ========================================
-// Maybe Helpers
-// ========================================
-
-/**
- * Cria um valor Maybe
- */
-export function maybe<T>(value: T|null|undefined): Maybe<T> {
-  return value;
-}
-
-/**
- * Verifica se um valor Maybe existe
- */
-export function isSome<T>(value: Maybe<T>): value is T {
-  return value !== null && value !== undefined;
-}
-
-/**
- * Verifica se um valor Maybe é nulo/undefined
- */
-export function isNone<T>(value: Maybe<T>): value is null|undefined {
-  return value === null || value === undefined;
-}
-
-/**
- * Unwrap de um valor Maybe com valor padrão
- */
-export function unwrap<T>(value: Maybe<T>, defaultValue: T): T {
-  return isSome(value) ? value : defaultValue;
-}
-
-// ========================================
-// Either Helpers
-// ========================================
-
-/**
- * Cria um Either Left (erro)
- */
-export function left<L, R>(value: L): Either<L, R> {
-  return {isLeft: true, left: value};
-}
-
-/**
- * Cria um Either Right (sucesso)
- */
-export function right<L, R>(value: R): Either<L, R> {
-  return {isLeft: false, right: value};
-}
-
-/**
- * Verifica se é Left
- */
-export function isLeft<L, R>(either: Either<L, R>): either is {
-  isLeft: true;
-  left: L
-}
-{ return either.isLeft; }
-
-/**
- * Verifica se é Right
- */
-export function isRight<L, R>(either: Either<L, R>): either is {
-  isLeft: false;
-  right: R
-}
-{ return !either.isLeft; }
 
 // ========================================
 // Object Utilities

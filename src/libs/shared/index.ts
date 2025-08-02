@@ -35,6 +35,10 @@ export * from './config/index.js';
 // Health & Monitoring
 export * from './health/index.js';
 
+// Observability & Instrumentation
+export {createCorrelationContext, Instrument, LogMethod, Observability} from './observability/index.js';
+export type{LogContext, MetricsCollector, PerformanceMetric, StructuredLogger, TraceSpan} from './observability/index.js';
+
 // Error Handling (re-export selected items to avoid ValidationError conflict)
 export {AppError, BusinessRuleError, ConflictError, DatabaseError, ErrorFactory, ErrorHandler, ExternalServiceError, ForbiddenError, InternalServerError, NotFoundError, RateLimitError, TimeoutError, UnauthorizedError} from './errors/index.js';
 

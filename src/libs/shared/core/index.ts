@@ -4,7 +4,30 @@
  * Classes e interfaces fundamentais que formam o núcleo do chassis
  */
 
-import type {BaseEvent, DomainEvent, ID, Result} from '../types/index.js';
+import type {ID, Result} from '../types/index.js';
+
+// ========================================
+// Event Types (movidos para cá)
+// ========================================
+
+/**
+ * Evento base do sistema
+ */
+export interface BaseEvent {
+  readonly id: string;
+  readonly type: string;
+  readonly timestamp: Date;
+  readonly aggregateId?: string;
+}
+
+/**
+ * Evento de domínio
+ */
+export interface DomainEvent extends BaseEvent {
+  readonly aggregateId: string;
+  readonly aggregateType: string;
+  readonly data: unknown;
+}
 
 // ========================================
 // Abstract Base Classes

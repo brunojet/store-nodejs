@@ -22,17 +22,6 @@
     "check-all": "npm run typecheck && npm run lint && npm run clang",
     "prepare": "npm run check-all"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "testMatch": [
-      "**/__tests__/**/*.test.ts"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.ts",
-      "!src/__tests__/**"
-    ]
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -45,6 +34,7 @@
     "typescript": "^5.8.4"
   },
   "devDependencies": {
+    "@jest/globals": "^30.0.5",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.30",

@@ -6,7 +6,29 @@
 
 generator client {
     provider = "prisma-client-js"
-    output   = "../src/generated/prisma"
+    output   = "../dist/libs/shared/prisma/generated"
+}
+
+/// Tabela genérica para log/auditoria de ações e eventos do sistema
+model LogAuditoria {
+    id            String   @id @default(uuid())
+    criadoEm      DateTime @default(now()) @map("criado_em")
+    atualizadoEm  DateTime @updatedAt @map("atualizado_em")
+    criadoPor     String   @map("criado_por")
+    atualizadoPor String   @map("atualizado_por")
+    entidade      String   @map("entidade")
+    entidadeId    String?  @map("entidade_id")
+    acao          String   @map("acao") // Ex: CREATE, UPDATE, DELETE, LOGIN, EXPORT, etc
+    campo         String?  @map("campo") // Campo alterado (quando aplicável)
+    valorAntes    String?  @map("valor_antes") // Valor anterior (quando aplicável)
+    valorDepois   String?  @map("valor_depois") // Valor novo (quando aplicável)
+    usuarioId     String?  @map("usuario_id") // ID do usuário responsável (quando aplicável)
+    usuarioNome   String?  @map("usuario_nome") // Nome do usuário responsável
+    ip            String?  @map("ip") // IP de origem da ação
+    contexto      String?  @map("contexto") // JSON com contexto adicional (payload, request, etc)
+
+    @@index([entidade, entidadeId, acao])
+    @@map("log_auditoria")
 }
 
 datasource db {
@@ -14,108 +36,226 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum EstagioCatalogo {
+    REVIEW
+    PILOTO
+    PRODUCAO
+}
+
 // Configure o arquivo .env na raiz do projeto com:
 // DATABASE_URL="postgresql://postgres:postgres@localhost:5432/mystore_db?schema=store_nodejs"
 
 model TerminalModelo {
-    id                     Int                      @id @default(autoincrement()) @map("id")
+    id                     String                   @id @default(uuid()) @map("id")
+    criadoEm               DateTime                 @default(now()) @map("criado_em")
+    atualizadoEm           DateTime                 @updatedAt @map("atualizado_em")
+    criadoPor              String                   @map("criado_por")
+    atualizadoPor          String                   @map("atualizado_por")
     nome                   String                   @map("nome")
-    ConfiguracaoAplicativo ConfiguracaoAplicativo[]
+    configuracaoAplicativo ConfiguracaoAplicativo[]
 
     @@map("terminal_modelo")
 }
 
-enum TipoIntegracao {
-    ADQ
-    TEF
+model TipoIntegracao {
+    id                     String                   @id @default(uuid())
+    criadoEm               DateTime                 @default(now()) @map("criado_em")
+    atualizadoEm           DateTime                 @updatedAt @map("atualizado_em")
+    criadoPor              String                   @map("criado_por")
+    atualizadoPor          String                   @map("atualizado_por")
+    nome                   String                   @unique
+    configuracaoAplicativo ConfiguracaoAplicativo[]
+
+    @@map("tipo_integracao")
+}
+
+model TipoCategoria {
+    id                  String      @id @default(uuid())
+    criadoEm            DateTime    @default(now()) @map("criado_em")
+    atualizadoEm        DateTime    @updatedAt @map("atualizado_em")
+    criadoPor           String      @map("criado_por")
+    atualizadoPor       String      @map("atualizado_por")
+    nome                String      @unique
+    CategoriaAplicativo Categoria[]
+
+    @@map("tipo_classificacao")
+}
+
+model Categoria {
+    id                         String                       @id @default(uuid()) @map("id")
+    criadoEm                   DateTime                     @default(now()) @map("criado_em")
+    atualizadoEm               DateTime                     @updatedAt @map("atualizado_em")
+    criadoPor                  String                       @map("criado_por")
+    atualizadoPor              String                       @map("atualizado_por")
+    nome                       String                       @unique
+    tipoCategoriaId            String                       @map("tipo_classificacao_id")
+    tipCategoria               TipoCategoria                @relation(fields: [tipoCategoriaId], references: [id])
+    paiId                      String?                      @map("pai_id")
+    pai                        Categoria?                   @relation("CategoriaPai", fields: [paiId], references: [id])
+    filhos                     Categoria[]                  @relation("CategoriaPai")
+    CategoriaAplicativoVinculo CategoriaAplicativoVinculo[]
+
+    @@map("categoria")
+}
+
+model CategoriaAplicativoVinculo {
+    id                    String     @id @default(uuid())
+    criadoEm              DateTime   @default(now()) @map("criado_em")
+    atualizadoEm          DateTime   @updatedAt @map("atualizado_em")
+    criadoPor             String     @map("criado_por")
+    atualizadoPor         String     @map("atualizado_por")
+    aplicativo            Aplicativo @relation(fields: [aplicativoId], references: [id])
+    aplicativoId          String     @map("aplicativo_id")
+    categoriaAplicativo   Categoria  @relation(fields: [categoriaAplicativoId], references: [id])
+    categoriaAplicativoId String     @map("categoria_aplicativo_id")
+
+    @@unique([aplicativoId, categoriaAplicativoId])
+    @@map("categoria_aplicativo_vinculo")
 }
 
 model Anexo {
-    id       Int        @id @default(autoincrement()) @map("id")
-    filePath String     @map("file_path")
-    images   AppImage[]
+    id            String     @id @default(uuid()) @map("id")
+    criadoEm      DateTime   @default(now()) @map("criado_em")
+    atualizadoEm  DateTime   @updatedAt @map("atualizado_em")
+    criadoPor     String     @map("criado_por")
+    atualizadoPor String     @map("atualizado_por")
+    filePath      String     @map("file_path")
+    images        AppImage[]
 
     @@map("anexo")
 }
 
 model AppImage {
-    id                  Int                @id @default(autoincrement()) @map("id")
-    anexo               Anexo              @relation(fields: [anexoId], references: [id])
-    anexoId             Int                @map("anexo_id")
-    appVersoes          VersaoAplicativo[] @relation("versaoAplicativoIcone")
-    detalheAplicativo   DetalheAplicativo? @relation(fields: [detalheAplicativoId], references: [id])
-    detalheAplicativoId Int?               @map("app_detalhe_id")
+    id                  String                      @id @default(uuid()) @map("id")
+    criadoEm            DateTime                    @default(now()) @map("criado_em")
+    atualizadoEm        DateTime                    @updatedAt @map("atualizado_em")
+    criadoPor           String                      @map("criado_por")
+    atualizadoPor       String                      @map("atualizado_por")
+    anexo               Anexo                       @relation(fields: [anexoId], references: [id])
+    anexoId             String                      @map("anexo_id")
+    versaoAplicativo    VersaoAplicativo[]          @relation("versao_aplicativo_icone")
+    detalheAplicativo   DetalheAplicativoHistorico? @relation(fields: [detalheAplicativoId], references: [id])
+    detalheAplicativoId String?                     @map("detalhes_aplicativo_id")
 
     @@map("app_image")
 }
 
-model SuporteParceiro {
-    id                 Int                  @id @default(autoincrement())
-    codigoParceiro     String               @map("codigo_parceiro")
-    nome               String
-    email              String
-    telefone           String
-    cadastroAplicativo CadastroAplicativo[]
-
-    @@map("suporte_parceiro")
-}
-
-model DetalheAplicativo {
-    id                 Int                  @id @default(autoincrement()) @map("id")
-    descricao          String               @map("descricao")
+model DetalheAplicativoHistorico {
+    id                 String                        @id @default(uuid()) @map("id")
+    criadoEm           DateTime                      @default(now()) @map("criado_em")
+    atualizadoEm       DateTime                      @updatedAt @map("atualizado_em")
+    criadoPor          String                        @map("criado_por")
+    atualizadoPor      String                        @map("atualizado_por")
+    descricao          String                        @map("descricao")
     images             AppImage[]
-    cadastroAplicativo CadastroAplicativo[]
+    cadastroAplicativo CadastroAplicativoHistorico[]
 
-    @@map("detalhe_aplicativo")
+    @@map("detalhe_aplicativo_historico")
 }
 
-model CadastroAplicativo {
-    id                     Int                      @id @default(autoincrement()) @map("id")
-    codigoParceiro         String                   @map("codigo_parceiro")
-    codigoProduto          String                   @map("codigo_produto")
-    suporteParceiro        SuporteParceiro?         @relation(fields: [suporteParceiroId], references: [id])
-    suporteParceiroId      Int?
-    detalhesAplicativo     DetalheAplicativo        @relation(fields: [detalhesAplicativoId], references: [id])
-    detalhesAplicativoId   Int                      @map("app_detalhes_id")
-    configuracaoAplicativo ConfiguracaoAplicativo[]
+model Aplicativo {
+    id                          String                        @id @default(uuid()) @map("id")
+    criadoEm                    DateTime                      @default(now()) @map("criado_em")
+    atualizadoEm                DateTime                      @updatedAt @map("atualizado_em")
+    criadoPor                   String                        @map("criado_por")
+    atualizadoPor               String                        @map("atualizado_por")
+    codigoParceiro              String                        @unique @map("codigo_parceiro")
+    codigoProduto               String                        @map("codigo_produto")
+    contatoParceiroId           String?                       @map("contato_parceiro_id")
+    contatoParceiro             ContatoParceiroHistorico?     @relation(fields: [contatoParceiroId], references: [id])
+    cadastroAplicativoHistorico CadastroAplicativoHistorico[]
+    configuracaoAplicativo      ConfiguracaoAplicativo[]
+    categoriaAplicativoVinculo  CategoriaAplicativoVinculo[]
 
-    @@map("cadastro_aplicativo")
+    @@index([codigoParceiro])
+    @@map("aplicativo")
+}
+
+model ContatoParceiroHistorico {
+    id             String       @id @default(uuid())
+    criadoEm       DateTime     @default(now()) @map("criado_em")
+    atualizadoEm   DateTime     @updatedAt @map("atualizado_em")
+    criadoPor      String       @map("criado_por")
+    atualizadoPor  String       @map("atualizado_por")
+    codigoParceiro String       @map("codigo_parceiro")
+    descricao      String       @map("descricao")
+    nome           String
+    email          String
+    telefone       String
+    aplicativo     Aplicativo[]
+
+    @@map("contato_parceiro_historico")
+}
+
+model CadastroAplicativoHistorico {
+    id                   String                     @id @default(uuid()) @map("id")
+    criadoEm             DateTime                   @default(now()) @map("criado_em")
+    atualizadoEm         DateTime                   @updatedAt @map("atualizado_em")
+    criadoPor            String                     @map("criado_por")
+    atualizadoPor        String                     @map("atualizado_por")
+    aplicativo           Aplicativo                 @relation(fields: [aplicativoId], references: [id])
+    aplicativoId         String                     @map("aplicativo_id")
+    detalhesAplicativo   DetalheAplicativoHistorico @relation(fields: [detalhesAplicativoId], references: [id])
+    detalhesAplicativoId String                     @map("detalhes_aplicativo_id")
+    versaoAplicativo     VersaoAplicativo[]
+
+    @@index([aplicativoId])
+    @@map("cadastro_aplicativo_historico")
 }
 
 model ConfiguracaoAplicativo {
-    id                   Int                @id @default(autoincrement()) @map("id")
-    nomePacoteApp        String             @map("nome_pacote_app")
-    tipoIntegracao       TipoIntegracao     @map("tipo_integracao")
-    terminalModeloId     Int                @map("terminal_modelo_id")
-    terminalModelo       TerminalModelo     @relation(fields: [terminalModeloId], references: [id])
-    cadastroAplicativoId Int                @map("cadastro_aplicativo_id")
-    cadastroAplicativo   CadastroAplicativo @relation(fields: [cadastroAplicativoId], references: [id])
-    catalogoAplicativo   CatalogoAplicativo[]
+    id               String             @id @default(uuid()) @map("id")
+    criadoEm         DateTime           @default(now()) @map("criado_em")
+    atualizadoEm     DateTime           @updatedAt @map("atualizado_em")
+    criadoPor        String             @map("criado_por")
+    atualizadoPor    String             @map("atualizado_por")
+    nomePacoteApp    String             @map("nome_pacote_app")
+    tipoIntegracaoId String             @map("tipo_integracao_id")
+    tipoIntegracao   TipoIntegracao     @relation(fields: [tipoIntegracaoId], references: [id])
+    terminalModeloId String             @map("terminal_modelo_id")
+    terminalModelo   TerminalModelo     @relation(fields: [terminalModeloId], references: [id])
+    aplicativoId     String             @map("aplicativo_id")
+    aplicativo       Aplicativo         @relation(fields: [aplicativoId], references: [id])
+    versaoAplicativo VersaoAplicativo[]
 
     @@map("configuracao_aplicativo")
 }
 
 model VersaoAplicativo {
-    id                 Int                  @id @default(autoincrement()) @map("id")
-    icone              AppImage             @relation("versaoAplicativoIcone", fields: [iconeId], references: [id])
-    iconeId            Int                  @map("icone_id")
-    versao             String               @map("versao")
-    changelog          String               @map("changelog")
-    pacoteMdm          String               @map("pacote_mdm")
-    versaoMdm          String               @map("versao_mdm")
-    tamanho            String               @map("tamanho")
-    avaliacao          Float                @map("avaliacao")
-    catalogoAplicativo CatalogoAplicativo[]
+    id                       String                      @id @default(uuid()) @map("id")
+    criadoEm                 DateTime                    @default(now()) @map("criado_em")
+    atualizadoEm             DateTime                    @updatedAt @map("atualizado_em")
+    criadoPor                String                      @map("criado_por")
+    atualizadoPor            String                      @map("atualizado_por")
+    icone                    AppImage                    @relation("versao_aplicativo_icone", fields: [iconeId], references: [id])
+    iconeId                  String                      @map("icone_id")
+    versao                   String                      @map("versao")
+    changelog                String                      @map("changelog")
+    tamanho                  String                      @map("tamanho")
+    avaliacao                Float                       @map("avaliacao")
+    configuracaoAplicativoId String                      @map("configuracao_aplicativo_id")
+    configuracaoAplicativo   ConfiguracaoAplicativo      @relation(fields: [configuracaoAplicativoId], references: [id])
+    cadastroAplicativoId     String                      @map("cadastro_aplicativo_id")
+    cadastroAplicativo       CadastroAplicativoHistorico @relation(fields: [cadastroAplicativoId], references: [id])
+    pacoteMdm                String                      @map("pacote_mdm")
+    versaoMdm                String                      @map("versao_mdm")
+    catalogoAplicativo       CatalogoAplicativo[]
 
+    @@index([configuracaoAplicativoId])
     @@map("versao_aplicativo")
 }
 
 model CatalogoAplicativo {
-    id                       Int                    @id @default(autoincrement()) @map("id")
-    configuracaoAplicativo   ConfiguracaoAplicativo @relation(fields: [configuracaoAplicativoId], references: [id])
-    configuracaoAplicativoId Int                    @map("configuracao_aplicativo_id")
-    versaoAplicativo         VersaoAplicativo       @relation(fields: [versaoAplicativoId], references: [id])
-    versaoAplicativoId       Int                    @map("versao_aplicativo_id")
+    id                 String           @id @default(uuid()) @map("id")
+    criadoEm           DateTime         @default(now()) @map("criado_em")
+    atualizadoEm       DateTime         @updatedAt @map("atualizado_em")
+    criadoPor          String           @map("criado_por")
+    atualizadoPor      String           @map("atualizado_por")
+    tipoEstagio        EstagioCatalogo  @default(REVIEW) @map("tipo_estagio")
+    versaoAplicativo   VersaoAplicativo @relation(fields: [versaoAplicativoId], references: [id])
+    versaoAplicativoId String           @map("versao_aplicativo_id")
 
+    @@index([tipoEstagio, versaoAplicativoId])
+    @@index([versaoAplicativoId])
     @@map("catalogo_aplicativo")
 }

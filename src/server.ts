@@ -1,11 +1,12 @@
 import express from 'express';
 
-export function startServer() {
+export function startServer(): void {
   const app = express();
-  const port = process.env.PORT || 3000;
+  const portEnv: string | undefined = process.env['PORT'];
+  const port: number = (portEnv !== undefined && portEnv !== '') ? Number(portEnv) : 3000;
 
-  app.get('/', (req, res) => {
-    res.send('Hello from worker ' + process.pid);
+  app.get('/', (_req, res) => {
+    res.send(`Hello from worker ${process.pid}`);
   });
 
   app.listen(port, () => {

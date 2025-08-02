@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Pre-commit hook for TypeScript strict checking
+echo "🔍 Running pre-commit checks..."
+
+# Check TypeScript types
+echo "⚡ Checking TypeScript types..."
+npm run typecheck
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript type check failed"
+  exit 1
+fi
+
+# Run linting
+echo "🧹 Running ESLint..."
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "❌ Linting failed"
+  exit 1
+fi
+
+# Run formatting check
+echo "🎨 Checking code formatting..."
+npm run clang
+if [ $? -ne 0 ]; then
+  echo "❌ Code formatting failed"
+  exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0

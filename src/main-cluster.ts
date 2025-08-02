@@ -1,7 +1,7 @@
 import cluster from 'cluster';
 import os from 'os';
 
-import {startServer} from './server.js';  // Adjust the import path as necessary
+import { startServer } from './server.js'; // Adjust the import path as necessary
 
 const numCPUs = os.cpus().length;
 
@@ -11,7 +11,7 @@ if (cluster.isPrimary) {
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
-  cluster.on('exit', (worker, code, signal) => {
+  cluster.on('exit', (worker, _code, _signal) => {
     console.log(`Worker ${worker.process.pid} died. Spawning a new one...`);
     cluster.fork();
   });

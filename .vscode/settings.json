@@ -23,9 +23,14 @@
     "eslint.run": "onType",
     "typescript.reportStyleChecksAsWarnings": false,
     "[typescript]": {
-        "editor.defaultFormatter": "ms-vscode.vscode-typescript-next"
+        "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "[javascript]": {
-        "editor.defaultFormatter": "ms-vscode.vscode-typescript-next"
-    }
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "debug.internalConsoleOptions": "neverOpen",
+    "debug.openDebug": "openOnDebugBreak",
+    "debug.showBreakpointsInOverviewRuler": true,
+    "debug.console.fontSize": 14,
+    "debug.console.lineHeight": 20
 }

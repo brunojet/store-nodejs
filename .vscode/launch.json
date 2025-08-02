@@ -1,0 +1,72 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug POS App Store (Single Worker)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/main-cluster.ts",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx"],
+      "env": {
+        "NODE_ENV": "development",
+        "WORKER_MULTIPLIER": "1",
+        "MAX_WORKERS": "1"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "name": "Debug POS App Store (Cluster)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/main-cluster.ts",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx"],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "name": "Debug Production Build",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/dist/main-cluster.js",
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "preLaunchTask": "build",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true
+    },
+    {
+      "name": "Attach to Running Process",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ]
+}

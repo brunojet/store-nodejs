@@ -209,11 +209,28 @@ export class CommonValidators {
   }
 
   /**
-   * Valida CNPJ brasileiro
+   * Valida CNPJ brasileiro (formato atual e futuro alfanumérico)
    */
   public static cnpj(cnpj: string): boolean {
-    cnpj = cnpj.replace(/[^\d]/g, '');
+    const cleanCnpj = cnpj.replace(/[^\w]/g, '').toUpperCase();
 
+    // CNPJ atual (14 dígitos numéricos)
+    if (/^\d{14}$/.test(cleanCnpj)) {
+      return CommonValidators.validateNumericCnpj(cleanCnpj);
+    }
+
+    // CNPJ futuro (12 alfanuméricos + 2 dígitos verificadores - 2026+)
+    if (/^[0-9A-Z]{12}\d{2}$/.test(cleanCnpj)) {
+      return CommonValidators.validateAlphanumericCnpj(cleanCnpj);
+    }
+
+    return false;
+  }
+
+  /**
+   * Valida CNPJ numérico atual
+   */
+  private static validateNumericCnpj(cnpj: string): boolean {
     if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) {
       return false;
     }
@@ -242,6 +259,59 @@ export class CommonValidators {
         sum += parseInt(cnpj.charAt(i)) * weight;
       }
     }
+    remainder = sum % 11;
+    const digit2 = remainder < 2 ? 0 : 11 - remainder;
+    if (digit2 !== parseInt(cnpj.charAt(13))) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Valida CNPJ alfanumérico futuro (algoritmo idêntico ao numérico)
+   * Primeiros 12 caracteres: alfanumérico (0-9, A-Z)
+   * Últimos 2 caracteres: sempre numéricos (dígitos verificadores)
+   * Conversão: todos os caracteres subtraem 48 (ASCII do '0')
+   */
+  private static validateAlphanumericCnpj(cnpj: string): boolean {
+    // Converte caracteres alfanuméricos para números (subtrai ASCII do '0')
+    const charToNum = (char: string): number => {
+      return char.charCodeAt(0) - 48;  // '0' = 48, 'A' = 65, etc.
+    };
+
+    // Primeiro dígito verificador
+    const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    let sum = 0;
+    for (let i = 0; i < 12; i++) {
+      const weight = weights1[i];
+      if (weight !== undefined) {
+        const numValue = charToNum(cnpj.charAt(i));
+        sum += numValue * weight;
+      }
+    }
+    let remainder = sum % 11;
+    const digit1 = remainder < 2 ? 0 : 11 - remainder;
+    if (digit1 !== parseInt(cnpj.charAt(12))) {
+      return false;
+    }
+
+    // Segundo dígito verificador (inclui o primeiro dígito)
+    const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    sum = 0;
+    for (let i = 0; i < 12; i++) {
+      const weight = weights2[i];
+      if (weight !== undefined) {
+        const numValue = charToNum(cnpj.charAt(i));
+        sum += numValue * weight;
+      }
+    }
+    // Adiciona o primeiro dígito verificador
+    const lastWeight = weights2[12];
+    if (lastWeight !== undefined) {
+      sum += parseInt(cnpj.charAt(12)) * lastWeight;
+    }
+
     remainder = sum % 11;
     const digit2 = remainder < 2 ? 0 : 11 - remainder;
     if (digit2 !== parseInt(cnpj.charAt(13))) {

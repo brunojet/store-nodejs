@@ -8,7 +8,7 @@
  * - Types e interfaces compartilhadas
  * - Middleware e interceptors
  * - Configuration management
- * - Health checks e monitoring
+ * - Observability e monitoring
  */
 
 // Types & Interfaces (base exports)
@@ -32,11 +32,8 @@ export * from './middleware/index.js';
 // Configuration
 export * from './config/index.js';
 
-// Health & Monitoring
-export * from './health/index.js';
-
 // Observability & Instrumentation
-export {createCorrelationContext, Instrument, LogMethod, Observability} from './observability/index.js';
+export {Instrument, LogMethod, Observability, createCorrelationContext} from './observability/index.js';
 export type{LogContext, MetricsCollector, PerformanceMetric, StructuredLogger, TraceSpan} from './observability/index.js';
 
 // Error Handling (re-export selected items to avoid ValidationError conflict)

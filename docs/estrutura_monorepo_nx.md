@@ -10,6 +10,8 @@ store-nodejs/
 │   │   ├── store-api/              # API da loja (POS Android e loja web logada)
 │   │   ├── backoffice-api/         # API do backoffice/admin
 │   │   ├── public-api/             # API pública (marketplace, parceiros, etc)
+│   │   ├── infra/
+│   │   │   └── health/             # Endpoints e lógica de infraestrutura (ex: health check)
 │   │   └── ... (outros apps)
 │   │
 │   ├── libs/
@@ -35,6 +37,7 @@ store-nodejs/
 ├── tsconfig.base.json
 └── ...
 ```
+
 ## Configuração do Prisma Client no Nx
 
 Para garantir que o Prisma gere o client no local esperado pelo Nx, configure o bloco generator no seu `schema.prisma` assim:
@@ -49,14 +52,15 @@ generator client {
 Assim, o Prisma Client ficará disponível para todos os apps/libs via importação centralizada.
 
 ## Princípios
+
 - **Isolamento de domínios:** Cada contexto de negócio (POS, backoffice, marketplace) tem seu próprio módulo.
 - **Shared centralizado:** Tudo que é comum (repositórios, DTOs, autenticação, erros, observabilidade) fica em `libs/shared`.
 - **Repositórios desacoplados:** Contratos e implementações de repositórios ficam em `shared/repository`, facilitando troca de ORM ou extração para microsserviço.
 - **Evolução independente:** Apps e libs podem ser testados, versionados e escalados separadamente.
 - **Pronto para extração:** Qualquer domínio pode ser "fatiado" para um microsserviço no futuro, sem grandes refatorações.
 
-
 ## Exemplo de dependências e consumidores
+
 - `apps/store-api` depende de `libs/domain-store`, `libs/shared/repository`, `libs/shared/auth`, etc.
   - **Consumidores:** POS Android (aplicativo de frente de caixa), Loja Web (área logada do cliente)
 - `apps/backoffice-api` depende de `libs/domain-backoffice`, `libs/shared/repository`, `libs/shared/auth`, etc.
@@ -69,10 +73,12 @@ Assim, o Prisma Client ficará disponível para todos os apps/libs via importaç
 - `libs/domain-marketplace` lida com lógica de marketplace, exibição pública, integrações externas.
 
 ## Observações
+
 - Recomenda-se criar um módulo `libs/shared/observability` para centralizar logs estruturados, métricas e tracing, facilitando padronização e integração com ferramentas externas.
 - O Nx permite lint, build, test e deploy por app/lib, com cache e pipelines otimizados.
 - O Prisma pode ser compartilhado ou "fatiado" por domínio, conforme a evolução.
 - Novos domínios ou apps podem ser adicionados facilmente, mantendo a organização.
+- **Infraestrutura desacoplada:** Endpoints como health check, métricas e readiness devem ficar em `apps/infra/health` (ou subpastas), mantendo apps de domínio focados apenas em regras de negócio.
 
 ---
 

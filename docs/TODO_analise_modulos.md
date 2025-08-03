@@ -1,5 +1,84 @@
 # TODO - Análise dos Módulos do Chassis
 
+## 🏭 ANÁLISE: Bibliotecas de Mercado vs Chassis Customizado
+
+### Health Check
+
+- **Nosso chassis**: HealthCheckManager, DatabaseHealthCheck, MemoryHealthCheck, etc
+- **Mercado**:
+  - `@godaddy/terminus` ⭐ **RECOMENDADO** - Graceful shutdown + health checks
+  - `express-healthcheck` - Simples mas básico
+  - `@hapi/good` - Focado em Hapi.js
+  - `lightship` - Kubernetes-focused, mais complexo
+  - Nativo Express - Muito manual
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Health checks são commodities
+
+#### Comparativo Health Check Libraries
+
+| Biblioteca            | Graceful Shutdown | Cluster-Aware | K8s Ready | Manutenção | Popularidade |
+| --------------------- | ----------------- | ------------- | --------- | ---------- | ------------ |
+| **@godaddy/terminus** | ✅                | ✅            | ✅        | Ativa      | 🔥 Alta      |
+| express-healthcheck   | ❌                | ❌            | ⚠️        | Baixa      | Média        |
+| lightship             | ✅                | ✅            | ✅        | Ativa      | Baixa        |
+| @hapi/good            | ✅                | ⚠️            | ⚠️        | Ativa      | Hapi only    |
+
+**Terminus é superior porque:**
+
+- ✅ Graceful shutdown automático em SIGTERM/SIGINT
+- ✅ Funciona nativamente com clusters Node.js
+- ✅ Endpoints Kubernetes-ready (/health/live, /health/ready)
+- ✅ Usado por empresas como GoDaddy, Netflix, Uber
+- ✅ Zero-downtime deployments
+
+### Validation
+
+- **Nosso chassis**: ValidationBuilder, CommonValidators, SchemaValidator
+- **Mercado**: `joi`, `yup`, `zod`, `ajv`, `class-validator`
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Validação é resolvida há anos
+
+### Config Management
+
+- **Nosso chassis**: ConfigurationBuilder complexo
+- **Mercado**: `dotenv`, `config`, `convict`, `env-var`
+- **Veredito**: ❌ **OVER-ENGINEERING** - process.env + dotenv resolve 90%
+
+### Utils (Object/Array/String)
+
+- **Nosso chassis**: deepClone, deepMerge, camelCase, etc
+- **Mercado**: `lodash`, `ramda`, `changeCase`
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Lodash é padrão há décadas
+
+### Observability/Logging
+
+- **Nosso chassis**: StructuredLogger, MetricsCollector
+- **Mercado**: `winston`, `pino`, `prometheus-client`, `opentelemetry`
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Telemetria é ecosystem maduro
+
+### Security
+
+- **Nosso chassis**: Encryption, JWT, hashing
+- **Mercado**: `bcrypt`, `jsonwebtoken`, `crypto-js`, `helmet`
+- **Veredito**: ❌ **REINVENTANDO A RODA** - Segurança não se improvisa
+
+### Events
+
+- **Nosso chassis**: EventBus customizado
+- **Mercado**: `eventemitter2`, `eventemitter3`, Node.js EventEmitter nativo
+- **Veredito**: ❌ **OVER-ENGINEERING** - EventEmitter nativo resolve a maioria
+
+## Proposta: Health Check Cluster-Aware
+
+Em ambiente cluster (Node.js), cada worker deve executar seu health check periodicamente (ex: a cada 10s) e alimentar um storage global (ex: Redis, banco, arquivo compartilhado) com seu status.
+
+O endpoint `/health` global pode então ler o status de todos os workers/nós e fornecer uma visão consolidada do sistema.
+
+Vantagens:
+
+- Health check reflete o estado real do cluster, não só do worker corrente.
+- Permite monitoramento proativo e decisões de orquestração mais seguras.
+
+Sugestão: Implementar como middleware opcional, configurável por ambiente.
+
 ## 📋 Status Atual do Chassis
 
 Data: 02/08/2025  
@@ -199,6 +278,93 @@ Modelagem: Baseada em schema Prisma com entidades de aplicativos, versões e cat
 - **Focar** nas entidades reais: Aplicativo, VersaoAplicativo, CatalogoAplicativo
 - **Implementar** workflows de publicação
 - **Evitar** abstrações que não agregam valor ao domínio
+
+---
+
+## 🔄 ESTRATÉGIA REVISADA: Feature-First + Chassis Evolutivo
+
+### 🚨 Problema Identificado
+
+Estamos implementando **bottom-up** (chassis → features) quando deveríamos ser **top-down** (features → chassis).
+
+### 💡 Nova Abordagem: Hybrid Development
+
+#### Fase 1: MVP com Chassis Mínimo (1-2 semanas)
+
+**Objetivo**: Implementar 1 feature completa para validar padrões reais
+
+1. **Chassis mínimo**:
+
+   - ✅ `types/` (já pronto)
+   - ✅ `database/` (já pronto)
+   - ✅ `validation/` (já pronto)
+   - ✅ `utils/` (já pronto)
+   - ✅ `errors/` (básico)
+   - ❌ Ignorar resto temporariamente
+
+2. **Feature piloto**: "Listar Aplicativos no Catálogo"
+   - Controller simples (sem middleware complexo)
+   - Service direto (sem DDD complexo)
+   - Repository Prisma direto (sem abstrações)
+   - Validação simples (sem schemas complexos)
+   - Response direto (sem transformations complexas)
+
+#### Fase 2: Extração de Padrões (1 semana)
+
+**Objetivo**: Identificar padrões reais que emergiram
+
+1. **Analisar código real**:
+
+   - Que abstrações realmente ajudaram?
+   - Que patterns se repetiram?
+   - Onde sentimos falta de algo do chassis?
+
+2. **Refatorar chassis baseado no real**:
+   - Extrair patterns que surgiram naturalmente
+   - Remover módulos que não foram usados
+   - Simplificar o que foi over-engineered
+
+#### Fase 3: Crescimento Incremental
+
+**Objetivo**: Expandir chassis conforme necessidade real
+
+1. **Nova feature** → **Novos patterns** → **Evolução do chassis**
+2. **Regra**: Só adicionar ao chassis quando aparecer 3x no código
+
+### 🎯 Feature Piloto Sugerida: "Listar Aplicativos"
+
+```typescript
+// apps/api/src/routes/aplicativos.ts
+app.get("/aplicativos", async (req, res) => {
+  // Controller direto, sem middleware complexo
+  const { page = 1, limit = 10 } = req.query;
+
+  // Service direto, sem DDD
+  const aplicativos = await prisma.catalogoAplicativo.findMany({
+    where: { tipoEstagio: "PRODUCAO" },
+    include: { versaoAplicativo: true },
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+
+  // Response direto, sem transformations
+  res.json({ success: true, data: aplicativos });
+});
+```
+
+**Benefícios**:
+
+- ✅ Entrega rápida
+- ✅ Aprendizado real sobre o domínio
+- ✅ Validação de padrões com uso real
+- ✅ Chassis evolui organicamente
+
+### 🧪 Experimento: 2 Semanas de Feature-First
+
+**Semana 1**: Implementar 2-3 endpoints básicos  
+**Semana 2**: Refatorar chassis baseado no que realmente usamos
+
+**Hipótese**: Vamos descobrir que 70% do chassis atual é desnecessário e 30% que está faltando.
 
 ---
 

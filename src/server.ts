@@ -1,12 +1,12 @@
 import express from 'express';
-import type { Server } from 'http';
+import type {Server} from 'http';
 
-import { setupHealthChecks, setupHealthRoutes } from './apps/infra/health/terminus-health.js';
-import { observabilityMiddleware } from './libs/shared/middleware/observability.middleware.js';
+import {setupHealthChecks, setupHealthRoutes} from './libs/shared/health/terminus-health.js';
+import {observabilityMiddleware} from './libs/shared/middleware/observability.middleware.js';
 
 export function startServer(): Server {
   const app = express();
-  const portEnv: string | undefined = process.env['PORT'];
+  const portEnv: string|undefined = process.env['PORT'];
   const port: number = (portEnv !== undefined && portEnv !== '') ? Number(portEnv) : 3000;
 
   // Middleware global de observabilidade - deve ser o primeiro
@@ -14,14 +14,14 @@ export function startServer(): Server {
 
   // Middleware de parsing JSON/URL-encoded
   app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({extended: true}));
 
   // Registrar rotas de health check
   setupHealthRoutes(app);
 
   // Rota básica para teste
   app.get('/', (_req, res) => {
-    res.json({ message: 'Server is running', pid: process.pid });
+    res.json({message: 'Server is running', pid: process.pid});
   });
 
   // Criar servidor HTTP

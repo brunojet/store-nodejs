@@ -8,103 +8,94 @@ config:
 erDiagram
 	direction TB
 	TerminalModelo {
-		String id  ""
-		String nome  ""
+		String id PK
+		String nome
 	}
 	TipoIntegracao {
-		String id  ""
-		String nome  ""
-	}
-	ContatoParceiroHistorico {
-		String id  ""
-		String codigoParceiro  ""
-		String descricao  ""
-		String nome  ""
-		String email  ""
-		String telefone  ""
+		String id PK
+		String nome UK
 	}
 	TipoCategoria {
-		String id  ""
-		String nome  ""
+		String id PK
+		String nome UK
 	}
 	Categoria {
-		String id  ""
-		String nome  ""
-		String tipoCategoriaId  ""
-		String paiId  ""
+		String id PK
+		String nome UK
+		String tipoCategoriaId FK
+		String paiId FK
 	}
 	CategoriaAplicativoVinculo {
-		String id  ""
-		String aplicativoId  ""
-		String categoriaAplicativoId  ""
+		String id PK
+		String aplicativoId FK
+		String categoriaAplicativoId FK
 	}
 	Aplicativo {
-		String id  ""
-		String nome  ""
-		String descricao  ""
-		String codigoParceiro  ""
-		String codigoProduto  ""
-		String contatoParceiroId  ""
+		String id PK
+		String nome
+		String descricao
+		String codigoParceiro UK
+		String codigoProduto
+		String contatoNome
+		String contatoEmail
+		String contatoTelefone
+		String contatoDescricao
 	}
 	Anexo {
-		String id  ""
-		String filePath  ""
-		String tipoMime  ""
-		Int tamanho  ""
-		String md5  ""
-		Boolean arquivoExiste  ""
+		String id PK
+		String filePath
+		String tipoMime
+		Int tamanho
+		String md5
+		Boolean arquivoExiste
 	}
 	ImagemAplicativo {
-		String id  ""
-		StatusAppImage status  ""
-		String anexoId  ""
+		String id PK
+		StatusAppImage status
+		String anexoId FK
 	}
 	ImagemDetalheAplicativoVinculo {
-		String id  ""
-		String imagemAplicativoId  ""
-		String detalheAplicativoId  ""
-	}
-	DetalheAplicativoHistorico {
-		String id  ""
-		String descricao  ""
-	}
-	ConfiguracaoAplicativo {
-		String id  ""
-		String nomePacoteApp  ""
-		String tipoIntegracaoId  ""
-		String terminalModeloId  ""
-		String aplicativoId  ""
-	}
-	ConfiguracaoCadastroAplicativoVinculo {
-		String id  ""
-		String cadastroAplicativoId  ""
-		String configuracaoAplicativoId  ""
+		String id PK
+		String imagemAplicativoId FK
+		String cadastroAplicativoId FK
 	}
 	CadastroAplicativoHistorico {
-		String id  ""
-		StatusCadastroAplicativo status  ""
-		String aplicativoId  ""
-		String detalhesAplicativoId  ""
+		String id PK
+		StatusCadastroAplicativo status
+		String descricao
+		String aplicativoId FK
+	}
+	ConfiguracaoAplicativo {
+		String id PK
+		String nomePacoteApp
+		String tipoIntegracaoId FK
+		String terminalModeloId FK
+		String aplicativoId FK
+	}
+	ConfiguracaoCadastroAplicativoVinculo {
+		String id PK
+		String cadastroAplicativoId FK
+		String configuracaoAplicativoId FK
 	}
 	VersaoAplicativo {
-		String id  ""
-		String nome  ""
-		String iconeId  ""
-		String versao  ""
-		String changelog  ""
-		String tamanho  ""
-		String configuracaoAplicativoId  ""
-		String cadastroAplicativoId  ""
-		String pacoteMdm  ""
-		String versaoMdm  ""
+		String id PK
+		String nome
+		String iconeId FK
+		String versao
+		String changelog
+		String tamanho
+		String configuracaoAplicativoId FK
+		String cadastroAplicativoId FK
+		String pacoteMdm
+		String versaoMdm
 	}
 	CatalogoAplicativo {
-		String id  ""
-		String aplicativoId  ""
-		String tipoIntegracaoId  ""
-		String terminalModeloId  ""
-		EstagioCatalogo tipoEstagio  ""
-		String versaoAplicativoId  ""
+		String id PK
+		String aplicativoId FK
+		String tipoIntegracaoId FK
+		String terminalModeloId FK
+		EstagioCatalogo tipoEstagio
+		String versaoAplicativoId FK
 	}
 
 	Aplicativo||--o{CatalogoAplicativo:"tem"
@@ -120,13 +111,11 @@ erDiagram
 	TipoIntegracao||--o{ConfiguracaoAplicativo:"tem"
 	ConfiguracaoAplicativo||--o{VersaoAplicativo:"tem"
 	CadastroAplicativoHistorico||--o{VersaoAplicativo:"tem"
-	CadastroAplicativoHistorico}o--||DetalheAplicativoHistorico:"detalhes"
 	VersaoAplicativo||--o{CatalogoAplicativo:"publicado em"
 	ImagemAplicativo||--o{VersaoAplicativo:"icone"
 	ImagemDetalheAplicativoVinculo}o--||ImagemAplicativo:"imagem"
-	ImagemDetalheAplicativoVinculo}o--||DetalheAplicativoHistorico:"detalhe"
+	ImagemDetalheAplicativoVinculo}o--||CadastroAplicativoHistorico:"cadastro"
 	Anexo||--o{ImagemAplicativo:"arquivo"
-	ContatoParceiroHistorico||--o{Aplicativo:"contato"
 	ConfiguracaoCadastroAplicativoVinculo}o--||CadastroAplicativoHistorico:"cadastro"
 	ConfiguracaoCadastroAplicativoVinculo}o--||ConfiguracaoAplicativo:"configuração"
 ```

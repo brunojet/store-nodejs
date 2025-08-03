@@ -64,7 +64,7 @@ erDiagram
 	ImagemAplicativo {
 		String id PK
 		StatusAppImage status
-		String anexoId FK UK
+		String anexoId FK
 	}
 	ImagemCadastroAplicativoVinculo {
 		String id PK

@@ -7,7 +7,13 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prisma:generate": "prisma generate --schema=prisma/schema.prisma"
+    "prisma:generate": "prisma generate --schema=prisma/schema.prisma",
+    "dev": "nx serve main-app",
+    "dev:cluster": "USE_CLUSTER=true nx serve main-app",
+    "build": "nx build main-app",
+    "start": "NODE_ENV=production node dist/main-app/main.js",
+    "start:cluster": "NODE_ENV=production USE_CLUSTER=true node dist/main-app/main.js",
+    "start:pm2": "NODE_ENV=production pm2 start dist/main-app/main.js --name store-api -i max"
   },
   "keywords": [],
   "author": "",

@@ -2,18 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug POS App Store (Single Worker)",
+            "name": "Debug Main App (Single Process)",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/src/main-cluster.ts",
+            "program": "${workspaceFolder}/src/apps/main-app/src/main.ts",
             "runtimeExecutable": "npx",
             "runtimeArgs": [
                 "tsx"
             ],
             "env": {
                 "NODE_ENV": "development",
-                "WORKER_MULTIPLIER": "1",
-                "MAX_WORKERS": "1"
+                "USE_CLUSTER": "false",
+                "HOST": "localhost",
+                "PORT": "3000"
             },
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
@@ -26,16 +27,43 @@
             ]
         },
         {
-            "name": "Debug POS App Store (Cluster)",
+            "name": "Debug Main App (Cluster Mode)",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/src/main-cluster.ts",
+            "program": "${workspaceFolder}/src/apps/main-app/src/main.ts",
             "runtimeExecutable": "npx",
             "runtimeArgs": [
                 "tsx"
             ],
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "development",
+                "USE_CLUSTER": "true",
+                "HOST": "localhost",
+                "PORT": "3000"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
+        },
+        {
+            "name": "Debug Backoffice API (Standalone)",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/apps/backoffice-api/src/main.ts",
+            "runtimeExecutable": "npx",
+            "runtimeArgs": [
+                "tsx"
+            ],
+            "env": {
+                "NODE_ENV": "development",
+                "HOST": "localhost",
+                "PORT": "3000"
             },
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
@@ -51,11 +79,12 @@
             "name": "Debug Production Build",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/dist/main-cluster.js",
+            "program": "${workspaceFolder}/dist/main-app/main.js",
             "env": {
-                "NODE_ENV": "production"
+                "NODE_ENV": "production",
+                "USE_CLUSTER": "false"
             },
-            "preLaunchTask": "build",
+            "preLaunchTask": "build:main-app",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "skipFiles": [

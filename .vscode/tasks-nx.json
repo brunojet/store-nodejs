@@ -5,7 +5,11 @@
             "label": "build:main-app",
             "type": "shell",
             "command": "npx",
-            "args": ["nx", "build", "main-app"],
+            "args": [
+                "nx",
+                "build",
+                "main-app"
+            ],
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -21,7 +25,11 @@
             "label": "build:backoffice-api",
             "type": "shell",
             "command": "npx",
-            "args": ["nx", "build", "backoffice-api"],
+            "args": [
+                "nx",
+                "build",
+                "backoffice-api"
+            ],
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -37,7 +45,11 @@
             "label": "serve:main-app",
             "type": "shell",
             "command": "npx",
-            "args": ["nx", "serve", "main-app"],
+            "args": [
+                "nx",
+                "serve",
+                "main-app"
+            ],
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -54,7 +66,10 @@
             "label": "serve:main-app:cluster",
             "type": "shell",
             "command": "npm",
-            "args": ["run", "dev:cluster"],
+            "args": [
+                "run",
+                "dev:cluster"
+            ],
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -71,7 +86,11 @@
             "label": "test:main-app",
             "type": "shell",
             "command": "npx",
-            "args": ["nx", "test", "main-app"],
+            "args": [
+                "nx",
+                "test",
+                "main-app"
+            ],
             "group": "test",
             "presentation": {
                 "echo": true,
@@ -87,7 +106,11 @@
             "label": "lint:main-app",
             "type": "shell",
             "command": "npx",
-            "args": ["nx", "lint", "main-app"],
+            "args": [
+                "nx",
+                "lint",
+                "main-app"
+            ],
             "group": "test",
             "presentation": {
                 "echo": true,

@@ -1,0 +1,23 @@
+{
+  "name": "store-nodejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:generate": "prisma generate --schema=prisma/schema.prisma"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nx": "^21.3.11",
+    "prisma": "^6.13.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.13.0"
+  }
+}

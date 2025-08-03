@@ -206,11 +206,11 @@ model CadastroAplicativoHistorico {
     criadoPor            String                                  @map("criado_por")
     atualizadoPor        String                                  @map("atualizado_por")
     status               StatusCadastroAplicativo                @default(DRAFT) @map("status")
-    detalheDescricao     String                                  @map("detalhe_descricao")
     aplicativo           Aplicativo                              @relation(fields: [aplicativoId], references: [id])
     aplicativoId         String                                  @map("aplicativo_id")
     versaoAplicativo     VersaoAplicativo[]
     configuracaoVinculos ConfiguracaoCadastroAplicativoVinculo[]
+    detalheDescricao     String                                  @map("detalhe_descricao")
     imagemVinculos       ImagemCadastroAplicativoVinculo[]
 
     @@index([aplicativoId])

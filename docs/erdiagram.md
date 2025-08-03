@@ -54,7 +54,7 @@ erDiagram
 		StatusAppImage status
 		String anexoId FK
 	}
-	ImagemDetalheAplicativoVinculo {
+	ImagemCadastroAplicativoVinculo {
 		String id PK
 		String imagemAplicativoId FK
 		String cadastroAplicativoId FK
@@ -62,8 +62,8 @@ erDiagram
 	CadastroAplicativoHistorico {
 		String id PK
 		StatusCadastroAplicativo status
-		String descricao
 		String aplicativoId FK
+		String detalheDescricao
 	}
 	ConfiguracaoAplicativo {
 		String id PK
@@ -113,8 +113,8 @@ erDiagram
 	CadastroAplicativoHistorico||--o{VersaoAplicativo:"tem"
 	VersaoAplicativo||--o{CatalogoAplicativo:"publicado em"
 	ImagemAplicativo||--o{VersaoAplicativo:"icone"
-	ImagemDetalheAplicativoVinculo}o--||ImagemAplicativo:"imagem"
-	ImagemDetalheAplicativoVinculo}o--||CadastroAplicativoHistorico:"cadastro"
+	ImagemCadastroAplicativoVinculo}o--||ImagemAplicativo:"imagem"
+	ImagemCadastroAplicativoVinculo}o--||CadastroAplicativoHistorico:"cadastro"
 	Anexo||--o{ImagemAplicativo:"arquivo"
 	ConfiguracaoCadastroAplicativoVinculo}o--||CadastroAplicativoHistorico:"cadastro"
 	ConfiguracaoCadastroAplicativoVinculo}o--||ConfiguracaoAplicativo:"configuração"

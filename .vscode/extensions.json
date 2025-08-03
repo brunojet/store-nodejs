@@ -1,12 +1,13 @@
 {
-    "recommendations": [
-        "ms-vscode.vscode-typescript-next",
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "ms-vscode.vscode-json",
-        "bradlc.vscode-tailwindcss",
-        "ms-vscode.vscode-jest",
-        "Prisma.prisma",
-        "ms-vscode-remote.vscode-remote-extensionpack"
-    ]
+  "recommendations": [
+    "ms-vscode.vscode-typescript-next",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-json",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-jest",
+    "Prisma.prisma",
+    "ms-vscode-remote.vscode-remote-extensionpack",
+    "firsttris.vscode-jest-runner"
+  ]
 }

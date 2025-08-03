@@ -7,27 +7,34 @@ store-nodejs/
 │
 ├── src/
 │   ├── apps/
-│   │   ├── store-api/              # API da loja (POS Android e loja web logada)
-│   │   ├── backoffice-api/         # API do backoffice/admin
-│   │   ├── public-api/             # API pública (marketplace, parceiros, etc)
+│   │   ├── store-api/              # Módulo Nx: API da loja (POS Android e loja web logada)
+│   │   │   ├── controllers/        # Controllers/handlers HTTP
+│   │   │   ├── services/           # Serviços de aplicação
+│   │   │   ├── domain/             # Lógica de domínio específica do app
+│   │   │   └── ...
+│   │   ├── backoffice-api/         # Módulo Nx: API do backoffice/admin
+│   │   │   ├── controllers/
+│   │   │   ├── services/
+│   │   │   ├── domain/
+│   │   │   └── ...
+│   │   ├── public-api/             # Módulo Nx: API pública (marketplace, parceiros, etc)
+│   │   │   ├── controllers/
+│   │   │   ├── services/
+│   │   │   ├── domain/
+│   │   │   └── ...
 │   │   ├── infra/
 │   │   │   └── health/             # Endpoints e lógica de infraestrutura (ex: health check)
 │   │   └── ... (outros apps)
 │   │
 │   ├── libs/
 │   │   ├── shared/
-│   │   │   ├── repository/         # Contratos, implementações e utilitários de repositórios
-│   │   │   ├── prisma/             # Schema, client e helpers do Prisma ORM
-│   │   │   │   └── generated/      # Prisma Client gerado automaticamente
-│   │   │   ├── auth/               # Autenticação, autorização, middlewares
-│   │   │   ├── dto/                # DTOs, validadores, mapeamentos
-│   │   │   ├── errors/             # Erros comuns e tratamento
-│   │   │   ├── observability/      # Logs estruturados, métricas, tracing (observabilidade)
-│   │   │   └── utils/              # Funções utilitárias, helpers
-│   │   ├── domain-store/           # Lógica de domínio da loja (POS e web logada)
-│   │   ├── domain-backoffice/      # Lógica de domínio do backoffice/admin
-│   │   ├── domain-marketplace/     # Lógica de domínio do marketplace
-│   │   └── ... (outros domínios)
+│   │   │   └── repository/         # Contratos e implementações de repositórios compartilhados
+│   │   └── infra/
+│   │       ├── database/           # Abstrações, clients e adapters para bancos, cache, filas, etc (ex: Prisma, Redis, Kafka)
+│   │       ├── auth/               # Autenticação, autorização
+│   │       ├── errors/             # Erros comuns e tratamento
+│   │       ├── observability/      # Logs estruturados, métricas, tracing
+│   │       └── utils/              # Funções utilitárias
 │   │
 │   ├── tools/                      # Scripts, geradores, automações Nx
 │   └── prisma/                     # Schema global, seeds, migrations
@@ -53,21 +60,23 @@ Assim, o Prisma Client ficará disponível para todos os apps/libs via importaç
 
 ## Princípios
 
-- **Isolamento de domínios:** Cada contexto de negócio (POS, backoffice, marketplace) tem seu próprio módulo.
-- **Shared centralizado:** Tudo que é comum (repositórios, DTOs, autenticação, erros, observabilidade) fica em `libs/shared`.
-- **Repositórios desacoplados:** Contratos e implementações de repositórios ficam em `shared/repository`, facilitando troca de ORM ou extração para microsserviço.
+- **Modularização por feature/app:** Cada app (ex: store-api, backoffice-api, public-api) é um módulo Nx independente, com controller, serviço e domínio próprios.
+- **Domínios isolados:** Cada contexto de negócio tem seu próprio domínio, podendo evoluir e ser extraído de forma independente.
+- **Shared centralizado:** Tudo que é comum (repositórios, DTOs, autenticação, erros, observabilidade, helpers de infra) fica em `libs/shared`.
+- **Repositórios compartilhados:** Contratos e implementações de repositórios ficam em `shared/repository`, facilitando troca de ORM ou extração para microsserviço.
+- **Infraestrutura compartilhada:** Middlewares, helpers, adapters e utilitários sem regra de negócio ficam em `shared/infra`.
 - **Evolução independente:** Apps e libs podem ser testados, versionados e escalados separadamente.
 - **Pronto para extração:** Qualquer domínio pode ser "fatiado" para um microsserviço no futuro, sem grandes refatorações.
 
 ## Exemplo de dependências e consumidores
 
-- `apps/store-api` depende de `libs/domain-store`, `libs/shared/repository`, `libs/shared/auth`, etc.
+- `apps/store-api` depende de seu domínio (`libs/domain-store`), de repositórios e helpers compartilhados (`libs/shared/repository`, `libs/shared/infra`), autenticação, DTOs, etc.
   - **Consumidores:** POS Android (aplicativo de frente de caixa), Loja Web (área logada do cliente)
-- `apps/backoffice-api` depende de `libs/domain-backoffice`, `libs/shared/repository`, `libs/shared/auth`, etc.
+- `apps/backoffice-api` depende de seu domínio (`libs/domain-backoffice`), de repositórios e helpers compartilhados, autenticação, etc.
   - **Consumidores:** Frontend do backoffice/admin (gestão, relatórios, etc)
-- `apps/public-api` depende de `libs/domain-marketplace`, `libs/shared/repository`, etc.
+- `apps/public-api` depende de seu domínio (`libs/domain-marketplace`), de repositórios e helpers compartilhados, etc.
   - **Consumidores:** Vitrine (área não logada, web), parceiros, integrações públicas
-- `libs/domain-store` pode depender de `libs/shared/dto`, `libs/shared/utils`, etc.
+- `libs/domain-store` pode depender de DTOs, utils e helpers de infra compartilhados.
   - **Responsável por:** Regras de negócio da loja (venda, catálogo, carrinho, etc), usadas tanto pelo POS quanto pela loja web
 - `libs/domain-backoffice` lida com regras administrativas, gestão, relatórios, etc.
 - `libs/domain-marketplace` lida com lógica de marketplace, exibição pública, integrações externas.
@@ -79,6 +88,7 @@ Assim, o Prisma Client ficará disponível para todos os apps/libs via importaç
 - O Prisma pode ser compartilhado ou "fatiado" por domínio, conforme a evolução.
 - Novos domínios ou apps podem ser adicionados facilmente, mantendo a organização.
 - **Infraestrutura desacoplada:** Endpoints como health check, métricas e readiness devem ficar em `apps/infra/health` (ou subpastas), mantendo apps de domínio focados apenas em regras de negócio.
+- **Helpers e middlewares de infra** (ex: logging, validação, adapters, middlewares genéricos) devem ser centralizados em `libs/shared/infra` para evitar duplicidade e facilitar manutenção.
 
 ---
 

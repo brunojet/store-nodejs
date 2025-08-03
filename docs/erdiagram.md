@@ -1,5 +1,12 @@
 # Diagrama ER (Mermaid) com Colunas
 
+**Legenda de Campos:**
+
+- **Aplicativo.nome**: Nome administrativo (backoffice)
+- **VersaoAplicativo.nome**: Nome técnico (gravado no APK)
+- **Aplicativo.descricao**: Resumo para listagem (backoffice)
+- **detalheDescricao**: Descrição completa exibida na loja pública
+
 ```mermaid
 ---
 config:

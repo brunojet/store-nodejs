@@ -92,7 +92,7 @@ model TipoCategoria {
     criadoPor           String      @map("criado_por")
     atualizadoPor       String      @map("atualizado_por")
     nome                String      @unique
-    CategoriaAplicativo Categoria[]
+    categoriaAplicativo Categoria[]
 
     @@map("tipo_classificacao")
 }
@@ -105,7 +105,7 @@ model Categoria {
     atualizadoPor              String                       @map("atualizado_por")
     nome                       String                       @unique
     tipoCategoriaId            String                       @map("tipo_classificacao_id")
-    tipCategoria               TipoCategoria                @relation(fields: [tipoCategoriaId], references: [id])
+    tipoCategoria              TipoCategoria                @relation(fields: [tipoCategoriaId], references: [id])
     paiId                      String?                      @map("pai_id")
     pai                        Categoria?                   @relation("CategoriaPai", fields: [paiId], references: [id])
     filhos                     Categoria[]                  @relation("CategoriaPai")

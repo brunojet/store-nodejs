@@ -130,17 +130,17 @@ model CategoriaAplicativoVinculo {
 }
 
 model Anexo {
-    id            String             @id @default(uuid()) @map("id")
-    criadoEm      DateTime           @default(now()) @map("criado_em")
-    atualizadoEm  DateTime           @updatedAt @map("atualizado_em")
-    criadoPor     String             @map("criado_por")
-    atualizadoPor String             @map("atualizado_por")
-    filePath      String             @map("file_path")
-    tipoMime      String?            @map("tipo_mime")
-    tamanho       Int?               @map("tamanho")
-    md5           String?            @map("md5")
-    arquivoExiste Boolean            @default(false) @map("arquivo_existe")
-    images        ImagemAplicativo[]
+    id            String            @id @default(uuid()) @map("id")
+    criadoEm      DateTime          @default(now()) @map("criado_em")
+    atualizadoEm  DateTime          @updatedAt @map("atualizado_em")
+    criadoPor     String            @map("criado_por")
+    atualizadoPor String            @map("atualizado_por")
+    filePath      String            @map("file_path")
+    tipoMime      String?           @map("tipo_mime")
+    tamanho       Int?              @map("tamanho")
+    md5           String?           @map("md5")
+    arquivoExiste Boolean           @default(false) @map("arquivo_existe")
+    imagem        ImagemAplicativo? // 1:1 - Uma imagem por anexo
 
     @@map("anexo")
 }
@@ -153,7 +153,7 @@ model ImagemAplicativo {
     atualizadoPor        String                            @map("atualizado_por")
     status               StatusAppImage                    @default(PENDENTE_UPLOAD) @map("status")
     anexo                Anexo                             @relation(fields: [anexoId], references: [id])
-    anexoId              String                            @map("anexo_id")
+    anexoId              String                            @unique @map("anexo_id") // 1:1 - Cada anexo tem apenas uma imagem
     versaoAplicativo     VersaoAplicativo[]                @relation("versao_aplicativo_icone")
     imagemDetalheVinculo ImagemCadastroAplicativoVinculo[]
 

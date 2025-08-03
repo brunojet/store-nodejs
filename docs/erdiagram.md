@@ -7,6 +7,11 @@
 - **Aplicativo.descricao**: Resumo para listagem (backoffice)
 - **detalheDescricao**: Descrição completa exibida na loja pública
 
+**Relacionamentos Principais:**
+
+- **Anexo ↔ ImagemAplicativo**: Relação 1:1 (cada arquivo tem exatamente uma imagem)
+- **anexoId**: Campo único que garante a integridade da relação 1:1
+
 ```mermaid
 ---
 config:
@@ -59,7 +64,7 @@ erDiagram
 	ImagemAplicativo {
 		String id PK
 		StatusAppImage status
-		String anexoId FK
+		String anexoId FK UK
 	}
 	ImagemCadastroAplicativoVinculo {
 		String id PK
@@ -122,7 +127,7 @@ erDiagram
 	ImagemAplicativo||--o{VersaoAplicativo:"icone"
 	ImagemCadastroAplicativoVinculo}o--||ImagemAplicativo:"imagem"
 	ImagemCadastroAplicativoVinculo}o--||CadastroAplicativoHistorico:"cadastro"
-	Anexo||--o{ImagemAplicativo:"arquivo"
+	Anexo||--||ImagemAplicativo:"arquivo 1:1"
 	ConfiguracaoCadastroAplicativoVinculo}o--||CadastroAplicativoHistorico:"cadastro"
 	ConfiguracaoCadastroAplicativoVinculo}o--||ConfiguracaoAplicativo:"configuração"
 ```

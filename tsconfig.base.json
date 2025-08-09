@@ -10,27 +10,14 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@store/backoffice-api": [
-        "src/apps/backoffice-api/src/index.ts"
-      ],
-      "@shared/*": [
-        "src/libs/shared/*"
-      ],
-      "@shared-generated/*": [
-        "src/libs/shared/generated/*"
-      ]
+  "@prisma-client/*": ["src/libs/shared/src/repository/prisma/generated/*"],
+      "@shared": ["src/libs/shared/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

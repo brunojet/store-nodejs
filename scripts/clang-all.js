@@ -14,7 +14,10 @@ async function main() {
     process.exit(0);
   }
 
-  const cmd = `clang-format -i ${files.map(f => '"' + f + '"').join(' ')}`;
+  // Usa npx clang-format se --npx for passado
+  const useNpx = process.argv.includes('--npx');
+  const clangCmd = useNpx ? 'npx clang-format' : 'clang-format';
+  const cmd = `${clangCmd} -i ${files.map(f => '"' + f + '"').join(' ')}`;
   console.log('Running:', cmd);
   execSync(cmd, { stdio: 'inherit' });
 }

@@ -1,20 +1,19 @@
 {
-    "name": "shared",
-    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "src/libs/shared",
-    "projectType": "library",
-    "targets": {
-        "build": {
-            "executor": "@nx/js:tsc",
-            "outputs": [
-                "{options.outputPath}"
-            ],
-            "options": {
-                "outputPath": "dist/libs/shared",
-                "main": "src/libs/shared/index.ts",
-                "tsConfig": "src/libs/shared/tsconfig.lib.json",
-                "assets": []
-            }
-        }
+  "name": "shared",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "src/libs/shared/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/src/libs/shared",
+        "main": "src/libs/shared/src/index.ts",
+        "tsConfig": "src/libs/shared/tsconfig.lib.json",
+        "assets": ["src/libs/shared/*.md"]
+      }
     }
+  }
 }

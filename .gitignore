@@ -4,6 +4,7 @@
 dist
 tmp
 out-tsc
+src/libs/shared/generated/
 
 # dependencies
 node_modules
@@ -42,3 +43,5 @@ Thumbs.db
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+**/prisma/generated/**

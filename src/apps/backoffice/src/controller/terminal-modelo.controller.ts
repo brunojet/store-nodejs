@@ -1,36 +1,38 @@
-import {
-  TerminalModeloCreateModel,
-  TerminalModeloGetModel,
-  TerminalModeloRepository,
-  TerminalModeloUpdateModel,
-} from '@shared';
+import {Request, Response, Router} from 'express';
 
-const terminalModeloRepository = new TerminalModeloRepository(null);
+import {TerminalModeloService} from '../service/terminal-modelo.service';
 
-export class TerminalModeloController {
-  async list(page = 1, pageSize = 10) {
-    const skip = (page - 1) * pageSize;
-    const [items, total] = await Promise.all([
-      terminalModeloRepository.getAll({skip, take : pageSize}),
-      terminalModeloRepository.count(),
-    ]);
-    return {items, total, page, pageSize};
-  }
+const terminalModeloService = new TerminalModeloService();
+const terminalModeloRouter = Router();
 
-  async get(id: string) {
-    // Usando TerminalModeloGetModel para tipar o parâmetro
-    const params: TerminalModeloGetModel = {id};
-    return terminalModeloRepository.getById(params.id);
-  }
+terminalModeloRouter.get('/', async (req: Request, res: Response) => {
+  const {page = 1, pageSize = 10} = req.query;
+  const result =
+      await terminalModeloService.list(Number(page), Number(pageSize));
+  res.json(result);
+});
 
-  async create(data: TerminalModeloCreateModel) {
-    return terminalModeloRepository.create(data);
-  }
+terminalModeloRouter.get('/:id', async (req: Request, res: Response) => {
+  const result = await terminalModeloService.get(req.params.id);
+  if (result)
+    res.json(result);
+  else
+    res.status(404).json({error : 'TerminalModelo não encontrada'});
+});
 
-  async update(id: string, data: TerminalModeloUpdateModel) {
-    // Garante que o id está presente no model de update
-    return terminalModeloRepository.update(id, {...data, id});
-  }
+terminalModeloRouter.post('/', async (req: Request, res: Response) => {
+  const result = await terminalModeloService.create(req.body);
+  res.status(201).json(result);
+});
 
-  async delete(id: string) { return terminalModeloRepository.delete(id); }
-}
+terminalModeloRouter.put('/:id', async (req: Request, res: Response) => {
+  const result = await terminalModeloService.update(req.params.id, req.body);
+  res.json(result);
+});
+
+terminalModeloRouter.delete('/:id', async (req: Request, res: Response) => {
+  await terminalModeloService.delete(req.params.id);
+  res.status(204).send();
+});
+
+export default terminalModeloRouter;

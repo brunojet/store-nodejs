@@ -1,36 +1,37 @@
-import {
-  CategoriaCreateModel,
-  CategoriaGetModel,
-  CategoriaRepository,
-  CategoriaUpdateModel,
-} from '@shared';
+import {Request, Response, Router} from 'express';
 
-const categoriaRepository = new CategoriaRepository(null);
+import {CategoriaService} from '../service/categoria.service';
 
-export class CategoriaController {
-  async list(page = 1, pageSize = 10) {
-    const skip = (page - 1) * pageSize;
-    const [items, total] = await Promise.all([
-      categoriaRepository.getAll({skip, take : pageSize}),
-      categoriaRepository.count(),
-    ]);
-    return {items, total, page, pageSize};
-  }
+const categoriaService = new CategoriaService();
+const categoriaRouter = Router();
 
-  async get(id: string) {
-    // Usando CategoriaGetModel para tipar o parâmetro
-    const params: CategoriaGetModel = {id};
-    return categoriaRepository.getById(params.id);
-  }
+categoriaRouter.get('/', async (req: Request, res: Response) => {
+  const {page = 1, pageSize = 10} = req.query;
+  const result = await categoriaService.list(Number(page), Number(pageSize));
+  res.json(result);
+});
 
-  async create(data: CategoriaCreateModel) {
-    return categoriaRepository.create(data);
-  }
+categoriaRouter.get('/:id', async (req: Request, res: Response) => {
+  const result = await categoriaService.get(req.params.id);
+  if (result)
+    res.json(result);
+  else
+    res.status(404).json({error : 'Categoria não encontrada'});
+});
 
-  async update(id: string, data: CategoriaUpdateModel) {
-    // Garante que o id está presente no model de update
-    return categoriaRepository.update(id, {...data, id});
-  }
+categoriaRouter.post('/', async (req: Request, res: Response) => {
+  const result = await categoriaService.create(req.body);
+  res.status(201).json(result);
+});
 
-  async delete(id: string) { return categoriaRepository.delete(id); }
-}
+categoriaRouter.put('/:id', async (req: Request, res: Response) => {
+  const result = await categoriaService.update(req.params.id, req.body);
+  res.json(result);
+});
+
+categoriaRouter.delete('/:id', async (req: Request, res: Response) => {
+  await categoriaService.delete(req.params.id);
+  res.status(204).send();
+});
+
+export default categoriaRouter;

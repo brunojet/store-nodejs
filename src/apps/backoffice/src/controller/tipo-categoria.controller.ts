@@ -1,36 +1,38 @@
-import {
-  TipoCategoriaCreateModel,
-  TipoCategoriaGetModel,
-  TipoCategoriaRepository,
-  TipoCategoriaUpdateModel,
-} from '@shared';
+import {Request, Response, Router} from 'express';
 
-const tipoCategoriaRepository = new TipoCategoriaRepository(null);
+import {TipoCategoriaService} from '../service/tipo-categoria.service';
 
-export class TipoCategoriaController {
-  async list(page = 1, pageSize = 10) {
-    const skip = (page - 1) * pageSize;
-    const [items, total] = await Promise.all([
-      tipoCategoriaRepository.getAll({skip, take : pageSize}),
-      tipoCategoriaRepository.count(),
-    ]);
-    return {items, total, page, pageSize};
-  }
+const tipoCategoriaService = new TipoCategoriaService();
+const tipoCategoriaRouter = Router();
 
-  async get(id: string) {
-    // Usando TipoCategoriaGetModel para tipar o parâmetro
-    const params: TipoCategoriaGetModel = {id};
-    return tipoCategoriaRepository.getById(params.id);
-  }
+tipoCategoriaRouter.get('/', async (req: Request, res: Response) => {
+  const {page = 1, pageSize = 10} = req.query;
+  const result =
+      await tipoCategoriaService.list(Number(page), Number(pageSize));
+  res.json(result);
+});
 
-  async create(data: TipoCategoriaCreateModel) {
-    return tipoCategoriaRepository.create(data);
-  }
+tipoCategoriaRouter.get('/:id', async (req: Request, res: Response) => {
+  const result = await tipoCategoriaService.get(req.params.id);
+  if (result)
+    res.json(result);
+  else
+    res.status(404).json({error : 'TipoCategoria não encontrada'});
+});
 
-  async update(id: string, data: TipoCategoriaUpdateModel) {
-    // Garante que o id está presente no model de update
-    return tipoCategoriaRepository.update(id, {...data, id});
-  }
+tipoCategoriaRouter.post('/', async (req: Request, res: Response) => {
+  const result = await tipoCategoriaService.create(req.body);
+  res.status(201).json(result);
+});
 
-  async delete(id: string) { return tipoCategoriaRepository.delete(id); }
-}
+tipoCategoriaRouter.put('/:id', async (req: Request, res: Response) => {
+  const result = await tipoCategoriaService.update(req.params.id, req.body);
+  res.json(result);
+});
+
+tipoCategoriaRouter.delete('/:id', async (req: Request, res: Response) => {
+  await tipoCategoriaService.delete(req.params.id);
+  res.status(204).send();
+});
+
+export default tipoCategoriaRouter;

@@ -20,6 +20,9 @@
     "paths": {
       "@store/backoffice-api": [
         "src/apps/backoffice-api/src/index.ts"
+      ],
+      "@shared/*": [
+        "src/libs/shared/*"
       ]
     }
   },

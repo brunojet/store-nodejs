@@ -108,7 +108,7 @@ CREATE TABLE "store_nodejs"."anexo" (
 );
 
 -- CreateTable
-CREATE TABLE "store_nodejs"."app_image" (
+CREATE TABLE "store_nodejs"."imagem_aplicativo" (
     "id" TEXT NOT NULL,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "atualizado_em" TIMESTAMP(3) NOT NULL,
@@ -116,21 +116,8 @@ CREATE TABLE "store_nodejs"."app_image" (
     "atualizado_por" TEXT NOT NULL,
     "status" "store_nodejs"."StatusAppImage" NOT NULL DEFAULT 'PENDENTE_UPLOAD',
     "anexo_id" TEXT NOT NULL,
-    "detalhes_aplicativo_id" TEXT,
 
-    CONSTRAINT "app_image_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "store_nodejs"."detalhe_aplicativo_historico" (
-    "id" TEXT NOT NULL,
-    "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "atualizado_em" TIMESTAMP(3) NOT NULL,
-    "criado_por" TEXT NOT NULL,
-    "atualizado_por" TEXT NOT NULL,
-    "descricao" TEXT NOT NULL,
-
-    CONSTRAINT "detalhe_aplicativo_historico_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "imagem_aplicativo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -144,25 +131,25 @@ CREATE TABLE "store_nodejs"."aplicativo" (
     "atualizado_por" TEXT NOT NULL,
     "codigo_parceiro" TEXT NOT NULL,
     "codigo_produto" TEXT NOT NULL,
-    "contato_parceiro_id" TEXT,
+    "contato_nome" TEXT,
+    "contato_email" TEXT,
+    "contato_telefone" TEXT,
+    "contato_descricao" TEXT,
 
     CONSTRAINT "aplicativo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "store_nodejs"."contato_parceiro_historico" (
+CREATE TABLE "store_nodejs"."imagem_cadastro_aplicativo_vinculo" (
     "id" TEXT NOT NULL,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "atualizado_em" TIMESTAMP(3) NOT NULL,
     "criado_por" TEXT NOT NULL,
     "atualizado_por" TEXT NOT NULL,
-    "codigo_parceiro" TEXT NOT NULL,
-    "descricao" TEXT NOT NULL,
-    "nome" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "telefone" TEXT NOT NULL,
+    "imagem_aplicativo_id" TEXT NOT NULL,
+    "cadastro_aplicativo_id" TEXT NOT NULL,
 
-    CONSTRAINT "contato_parceiro_historico_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "imagem_cadastro_aplicativo_vinculo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -174,7 +161,7 @@ CREATE TABLE "store_nodejs"."cadastro_aplicativo_historico" (
     "atualizado_por" TEXT NOT NULL,
     "status" "store_nodejs"."StatusCadastroAplicativo" NOT NULL DEFAULT 'DRAFT',
     "aplicativo_id" TEXT NOT NULL,
-    "detalhes_aplicativo_id" TEXT NOT NULL,
+    "detalhe_descricao" TEXT NOT NULL,
 
     CONSTRAINT "cadastro_aplicativo_historico_pkey" PRIMARY KEY ("id")
 );
@@ -259,10 +246,19 @@ CREATE UNIQUE INDEX "categoria_nome_key" ON "store_nodejs"."categoria"("nome");
 CREATE UNIQUE INDEX "categoria_aplicativo_vinculo_aplicativo_id_categoria_aplica_key" ON "store_nodejs"."categoria_aplicativo_vinculo"("aplicativo_id", "categoria_aplicativo_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "imagem_aplicativo_anexo_id_key" ON "store_nodejs"."imagem_aplicativo"("anexo_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "aplicativo_codigo_parceiro_key" ON "store_nodejs"."aplicativo"("codigo_parceiro");
 
 -- CreateIndex
 CREATE INDEX "aplicativo_codigo_parceiro_idx" ON "store_nodejs"."aplicativo"("codigo_parceiro");
+
+-- CreateIndex
+CREATE INDEX "aplicativo_contato_email_idx" ON "store_nodejs"."aplicativo"("contato_email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "imagem_cadastro_aplicativo_vinculo_imagem_aplicativo_id_cad_key" ON "store_nodejs"."imagem_cadastro_aplicativo_vinculo"("imagem_aplicativo_id", "cadastro_aplicativo_id");
 
 -- CreateIndex
 CREATE INDEX "cadastro_aplicativo_historico_aplicativo_id_idx" ON "store_nodejs"."cadastro_aplicativo_historico"("aplicativo_id");
@@ -295,19 +291,16 @@ ALTER TABLE "store_nodejs"."categoria_aplicativo_vinculo" ADD CONSTRAINT "catego
 ALTER TABLE "store_nodejs"."categoria_aplicativo_vinculo" ADD CONSTRAINT "categoria_aplicativo_vinculo_categoria_aplicativo_id_fkey" FOREIGN KEY ("categoria_aplicativo_id") REFERENCES "store_nodejs"."categoria"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "store_nodejs"."app_image" ADD CONSTRAINT "app_image_anexo_id_fkey" FOREIGN KEY ("anexo_id") REFERENCES "store_nodejs"."anexo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "store_nodejs"."imagem_aplicativo" ADD CONSTRAINT "imagem_aplicativo_anexo_id_fkey" FOREIGN KEY ("anexo_id") REFERENCES "store_nodejs"."anexo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "store_nodejs"."app_image" ADD CONSTRAINT "app_image_detalhes_aplicativo_id_fkey" FOREIGN KEY ("detalhes_aplicativo_id") REFERENCES "store_nodejs"."detalhe_aplicativo_historico"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "store_nodejs"."imagem_cadastro_aplicativo_vinculo" ADD CONSTRAINT "imagem_cadastro_aplicativo_vinculo_imagem_aplicativo_id_fkey" FOREIGN KEY ("imagem_aplicativo_id") REFERENCES "store_nodejs"."imagem_aplicativo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "store_nodejs"."aplicativo" ADD CONSTRAINT "aplicativo_contato_parceiro_id_fkey" FOREIGN KEY ("contato_parceiro_id") REFERENCES "store_nodejs"."contato_parceiro_historico"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "store_nodejs"."imagem_cadastro_aplicativo_vinculo" ADD CONSTRAINT "imagem_cadastro_aplicativo_vinculo_cadastro_aplicativo_id_fkey" FOREIGN KEY ("cadastro_aplicativo_id") REFERENCES "store_nodejs"."cadastro_aplicativo_historico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "store_nodejs"."cadastro_aplicativo_historico" ADD CONSTRAINT "cadastro_aplicativo_historico_aplicativo_id_fkey" FOREIGN KEY ("aplicativo_id") REFERENCES "store_nodejs"."aplicativo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "store_nodejs"."cadastro_aplicativo_historico" ADD CONSTRAINT "cadastro_aplicativo_historico_detalhes_aplicativo_id_fkey" FOREIGN KEY ("detalhes_aplicativo_id") REFERENCES "store_nodejs"."detalhe_aplicativo_historico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "store_nodejs"."configuracao_aplicativo" ADD CONSTRAINT "configuracao_aplicativo_tipo_integracao_id_fkey" FOREIGN KEY ("tipo_integracao_id") REFERENCES "store_nodejs"."tipo_integracao"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -325,7 +318,7 @@ ALTER TABLE "store_nodejs"."configuracao_cadastro_aplicativo_vinculo" ADD CONSTR
 ALTER TABLE "store_nodejs"."configuracao_cadastro_aplicativo_vinculo" ADD CONSTRAINT "configuracao_cadastro_aplicativo_vinculo_configuracao_apli_fkey" FOREIGN KEY ("configuracao_aplicativo_id") REFERENCES "store_nodejs"."configuracao_aplicativo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "store_nodejs"."versao_aplicativo" ADD CONSTRAINT "versao_aplicativo_icone_id_fkey" FOREIGN KEY ("icone_id") REFERENCES "store_nodejs"."app_image"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "store_nodejs"."versao_aplicativo" ADD CONSTRAINT "versao_aplicativo_icone_id_fkey" FOREIGN KEY ("icone_id") REFERENCES "store_nodejs"."imagem_aplicativo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "store_nodejs"."versao_aplicativo" ADD CONSTRAINT "versao_aplicativo_configuracao_aplicativo_id_fkey" FOREIGN KEY ("configuracao_aplicativo_id") REFERENCES "store_nodejs"."configuracao_aplicativo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

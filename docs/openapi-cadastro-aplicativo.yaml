@@ -13,11 +13,193 @@ tags:
     description: Operações relacionadas ao cadastro e gerenciamento de aplicativos
   - name: Imagens
     description: Operações relacionadas ao upload de imagens
+  - name: Categorias
+    description: Operações relacionadas à entidade Categoria
+  - name: TipoCategorias
+    description: Operações relacionadas à entidade TipoCategoria
 servers:
   - url: http://localhost:3000/api
     description: Servidor local de desenvolvimento
 
 paths:
+  /tipocategorias:
+    get:
+      tags: [TipoCategorias]
+      summary: Listar tipos de categoria
+      operationId: listarTipoCategorias
+      responses:
+        '200':
+          description: Lista de tipos de categoria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TipoCategoria'
+    post:
+      tags: [TipoCategorias]
+      summary: Criar tipo de categoria
+      operationId: criarTipoCategoria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoCategoriaInput'
+      responses:
+        '201':
+          description: Tipo de categoria criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoCategoria'
+
+  /tipocategorias/{id}:
+    get:
+      tags: [TipoCategorias]
+      summary: Buscar tipo de categoria por ID
+      operationId: buscarTipoCategoriaPorId
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tipo de categoria encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoCategoria'
+        '404':
+          description: Tipo de categoria não encontrado
+    put:
+      tags: [TipoCategorias]
+      summary: Atualizar tipo de categoria
+      operationId: atualizarTipoCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoCategoriaInput'
+      responses:
+        '200':
+          description: Tipo de categoria atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoCategoria'
+    delete:
+      tags: [TipoCategorias]
+      summary: Remover tipo de categoria
+      operationId: removerTipoCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tipo de categoria removido
+
+  /categorias:
+    get:
+      tags: [Categorias]
+      summary: Listar categorias
+      operationId: listarCategorias
+      responses:
+        '200':
+          description: Lista de categorias
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Categoria'
+    post:
+      tags: [Categorias]
+      summary: Criar categoria
+      operationId: criarCategoria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaInput'
+      responses:
+        '201':
+          description: Categoria criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+
+  /categorias/{id}:
+    get:
+      tags: [Categorias]
+      summary: Buscar categoria por ID
+      operationId: buscarCategoriaPorId
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Categoria encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+        '404':
+          description: Categoria não encontrada
+    put:
+      tags: [Categorias]
+      summary: Atualizar categoria
+      operationId: atualizarCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaInput'
+      responses:
+        '200':
+          description: Categoria atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+    delete:
+      tags: [Categorias]
+      summary: Remover categoria
+      operationId: removerCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Categoria removida
+
   /apps:
     post:
       tags: [Aplicativos]
@@ -336,6 +518,57 @@ components:
             $ref: '#/components/schemas/AppResumo'
         pagination:
           $ref: '#/components/schemas/Pagination'
+
+    Categoria:
+      type: object
+      required:
+        - id
+        - nome
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        descricao:
+          type: string
+        tipoCategoriaId:
+          type: string
+
+    CategoriaInput:
+      type: object
+      required:
+        - nome
+        - tipoCategoriaId
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
+        tipoCategoriaId:
+          type: string
+
+    TipoCategoria:
+      type: object
+      required:
+        - id
+        - nome
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        descricao:
+          type: string
+
+    TipoCategoriaInput:
+      type: object
+      required:
+        - nome
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
 
     AppResumo:
       type: object

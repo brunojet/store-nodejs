@@ -23,6 +23,9 @@
       ],
       "@shared/*": [
         "src/libs/shared/*"
+      ],
+      "@shared-generated/*": [
+        "src/libs/shared/generated/*"
       ]
     }
   },

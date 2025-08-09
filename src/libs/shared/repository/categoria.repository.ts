@@ -1,4 +1,4 @@
-import { Categoria, Prisma, PrismaClient } from '../../../../dist/libs/shared/prisma/generated';
+import { Categoria, Prisma, PrismaClient } from './prisma/generated';
 
 const prisma = new PrismaClient();
 

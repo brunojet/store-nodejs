@@ -4,7 +4,6 @@
 dist
 tmp
 out-tsc
-src/libs/shared/generated/
 
 # dependencies
 node_modules

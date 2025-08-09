@@ -11,6 +11,9 @@
         "{options.outputPath}"
       ],
       "defaultConfiguration": "production",
+      "dependsOn": [
+        "shared:build"
+      ],
       "options": {
         "platform": "node",
         "outputPath": "dist/backoffice-api",

@@ -15,7 +15,7 @@ Execute o comando abaixo para gerar a biblioteca infra com Nx:
 
 
 ```
- npx nx generate @nx/node:library infra --directory=libs --importPath=@infra --compiler=tsc --unitTestRunner=jest --linter=eslint
+ npx nx generate @nx/node:library infra --directory=src/libs/infra --importPath=@infra --compiler=tsc --unitTestRunner=jest --linter=eslint
 ```
 
 Este comando cria a estrutura recomendada e já configura o projeto para uso com Nx.

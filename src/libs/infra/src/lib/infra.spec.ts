@@ -1,7 +1,5 @@
-import { infra } from './infra';
+import {infra} from './infra';
 
-describe('infra', () => {
-  it('should work', () => {
-    expect(infra()).toEqual('infra');
-  });
-});
+describe(
+    'infra',
+    () => { it('should work', () => { expect(infra()).toEqual('infra'); }); });

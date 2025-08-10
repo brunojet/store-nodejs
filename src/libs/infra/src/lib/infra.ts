@@ -1,3 +1,1 @@
-export function infra(): string {
-  return 'infra';
-}
+export function infra(): string { return 'infra'; }

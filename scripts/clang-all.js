@@ -1,12 +1,23 @@
 import { execSync } from 'child_process';
 import { glob } from 'glob';
-import path from 'path';
 
 async function main() {
-  const patterns = ['src/**/*.ts', 'src/**/*.js', 'src/**/*.tsx', 'src/**/*.jsx'];
+  const patterns = [
+    'src/**/*.ts',
+    'src/**/*.js',
+    'src/**/*.tsx',
+    'src/**/*.jsx'
+  ];
   let files = [];
   for (const pattern of patterns) {
-    files = files.concat(await glob(pattern));
+    files = files.concat(
+      await glob(pattern, {
+        ignore: [
+          '**/prisma/generated/**',
+          '**/dist/**'
+        ]
+      })
+    );
   }
 
   if (files.length === 0) {
@@ -14,7 +25,7 @@ async function main() {
     process.exit(0);
   }
 
-  const cmd = `clang-format -i ${files.map(f => '"' + f + '"').join(' ')}`;
+  const cmd = `npx clang-format -i ${files.map(f => '"' + f + '"').join(' ')}`;
   console.log('Running:', cmd);
   execSync(cmd, { stdio: 'inherit' });
 }

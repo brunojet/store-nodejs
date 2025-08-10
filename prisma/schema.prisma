@@ -80,6 +80,7 @@ model TipoIntegracao {
     criadoPor              String                   @map("criado_por")
     atualizadoPor          String                   @map("atualizado_por")
     nome                   String                   @unique
+    descricao              String?                  @map("descricao")
     configuracaoAplicativo ConfiguracaoAplicativo[]
     catalogoAplicativo     CatalogoAplicativo[]
 
@@ -93,9 +94,10 @@ model TipoCategoria {
     criadoPor           String      @map("criado_por")
     atualizadoPor       String      @map("atualizado_por")
     nome                String      @unique
+    descricao           String?     @map("descricao")
     categoriaAplicativo Categoria[]
 
-    @@map("tipo_classificacao")
+    @@map("tipo_categoria")
 }
 
 model Categoria {

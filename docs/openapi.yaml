@@ -1,0 +1,444 @@
+openapi: 3.0.3
+info:
+  title: Store Backoffice API
+  version: 1.0.0
+  description: OpenAPI para os endpoints de terminal-modelo, tipo-categoria e categoria
+  contact:
+    name: Bruno Jet
+    email: brunojet@email.com
+    url: https://github.com/brunojet/store-nodejs
+servers:
+  - url: http://localhost:3333/api
+tags:
+  - name: terminal-modelo
+    description: Operações relacionadas a modelos de terminais
+  - name: tipo-categoria
+    description: Operações relacionadas a tipos de categoria
+  - name: categoria
+    description: Operações relacionadas a categorias
+paths:
+  /terminal-modelo:
+    post:
+      tags: [terminal-modelo]
+      summary: Criar TerminalModelo
+      description: Cria um novo modelo de terminal.
+      operationId: createTerminalModelo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TerminalModeloCreateModel'
+      responses:
+        '201':
+          description: TerminalModelo criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalModelo'
+    get:
+      tags: [terminal-modelo]
+      summary: Listar TerminalModelos
+      description: Retorna uma lista paginada de modelos de terminais.
+      operationId: listTerminalModelos
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de TerminalModelos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TerminalModelo'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+  /terminal-modelo/{id}:
+    get:
+      tags: [terminal-modelo]
+      summary: Obter TerminalModelo por ID
+      description: Busca um modelo de terminal pelo seu ID.
+      operationId: getTerminalModelo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: TerminalModelo encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalModelo'
+        '404':
+          description: Não encontrado
+    put:
+      tags: [terminal-modelo]
+      summary: Atualizar TerminalModelo
+      description: Atualiza os dados de um modelo de terminal existente.
+      operationId: updateTerminalModelo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TerminalModeloUpdateModel'
+      responses:
+        '200':
+          description: TerminalModelo atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalModelo'
+    delete:
+      tags: [terminal-modelo]
+      summary: Remover TerminalModelo
+      description: Remove um modelo de terminal pelo ID.
+      operationId: deleteTerminalModelo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Removido com sucesso
+  /tipo-categoria:
+    post:
+      tags: [tipo-categoria]
+      summary: Criar TipoCategoria
+      description: Cria um novo tipo de categoria.
+      operationId: createTipoCategoria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoCategoriaCreateModel'
+      responses:
+        '201':
+          description: TipoCategoria criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoCategoria'
+    get:
+      tags: [tipo-categoria]
+      summary: Listar TipoCategorias
+      description: Retorna uma lista paginada de tipos de categoria.
+      operationId: listTipoCategorias
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de TipoCategorias
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TipoCategoria'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+  /tipo-categoria/{id}:
+    get:
+      tags: [tipo-categoria]
+      summary: Obter TipoCategoria por ID
+      description: Busca um tipo de categoria pelo seu ID.
+      operationId: getTipoCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: TipoCategoria encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoCategoria'
+        '404':
+          description: Não encontrado
+    put:
+      tags: [tipo-categoria]
+      summary: Atualizar TipoCategoria
+      description: Atualiza os dados de um tipo de categoria existente.
+      operationId: updateTipoCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoCategoriaUpdateModel'
+      responses:
+        '200':
+          description: TipoCategoria atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoCategoria'
+    delete:
+      tags: [tipo-categoria]
+      summary: Remover TipoCategoria
+      description: Remove um tipo de categoria pelo ID.
+      operationId: deleteTipoCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Removido com sucesso
+  /categoria:
+    post:
+      tags: [categoria]
+      summary: Criar Categoria
+      description: Cria uma nova categoria.
+      operationId: createCategoria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaCreateModel'
+      responses:
+        '201':
+          description: Categoria criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+    get:
+      tags: [categoria]
+      summary: Listar Categorias
+      description: Retorna uma lista paginada de categorias.
+      operationId: listCategorias
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de Categorias
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Categoria'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+  /categoria/{id}:
+    get:
+      tags: [categoria]
+      summary: Obter Categoria por ID
+      description: Busca uma categoria pelo seu ID.
+      operationId: getCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Categoria encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+        '404':
+          description: Não encontrado
+    put:
+      tags: [categoria]
+      summary: Atualizar Categoria
+      description: Atualiza os dados de uma categoria existente.
+      operationId: updateCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaUpdateModel'
+      responses:
+        '200':
+          description: Categoria atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+    delete:
+      tags: [categoria]
+      summary: Remover Categoria
+      description: Remove uma categoria pelo ID.
+      operationId: deleteCategoria
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Removido com sucesso
+components:
+  schemas:
+    TerminalModelo:
+      type: object
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        descricao:
+          type: string
+    TerminalModeloCreateModel:
+      type: object
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
+      required:
+        - nome
+    TerminalModeloUpdateModel:
+      type: object
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
+    TipoCategoria:
+      type: object
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        descricao:
+          type: string
+    TipoCategoriaCreateModel:
+      type: object
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
+      required:
+        - nome
+    TipoCategoriaUpdateModel:
+      type: object
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
+    Categoria:
+      type: object
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        tipoCategoriaId:
+          type: string
+        tipoCategoria:
+          $ref: '#/components/schemas/TipoCategoria'
+        paiId:
+          type: string
+          nullable: true
+        pai:
+          $ref: '#/components/schemas/Categoria'
+          nullable: true
+        filhos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Categoria'
+        CategoriaAplicativoVinculo:
+          type: array
+          items:
+            type: object
+    CategoriaCreateModel:
+      type: object
+      properties:
+        nome:
+          type: string
+        tipoCategoriaId:
+          type: string
+        paiId:
+          type: string
+          nullable: true
+      required:
+        - nome
+        - tipoCategoriaId
+    CategoriaUpdateModel:
+      type: object
+      properties:
+        nome:
+          type: string

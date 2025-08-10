@@ -6,11 +6,12 @@ interface AuthenticatedRequest extends Request {
   userId: string;
 }
 
-import {BaseService, Pageable} from '../service/base.service';
+import {BaseService, Pageable, IBaseRepository} from '../service/base.service';
 
 export abstract class BaseController<
-    TModel, TCreate, TUpdate, TRepo,
-    TService extends BaseService<TModel, TCreate, TUpdate, TRepo>> {
+    TModel, TCreate, TUpdate, TRepo extends IBaseRepository<TModel>,
+                                            TService extends
+        BaseService<TModel, TCreate, TUpdate, TRepo>> {
   public router: Router;
   protected service: TService;
 
@@ -70,14 +71,15 @@ export abstract class BaseController<
   }
 
   async getAll(req: Request, res: Response, next: NextFunction) {
-    const {page = 1, size = 20, ...rawFilter} = req.query;
-    // Converte todos os valores do filtro para string (ou outro tipo esperado)
+    const {page = 0, pageSize = 20, ...rawFilter} = req.query;
+    const pageNum = Math.max(0, Number(page));
+    const pageSizeNum = Math.max(1, Number(pageSize));
     const filter =
         Object.fromEntries(Object.entries(rawFilter).map(
             ([ k, v ]) => [k, typeof v === 'string' ? v : String(v)])) as
         Partial<TModel>;
     const result: Pageable<TModel> = await this.service.getAll(
-        {filter, page : Number(page), size : Number(size)});
+        {filter, page : pageNum, pageSize : pageSizeNum});
     res.json(result);
   }
 }

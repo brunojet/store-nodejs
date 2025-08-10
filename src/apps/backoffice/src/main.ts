@@ -20,7 +20,6 @@ import {CategoriaService} from './service/categoria.service';
 import {TerminalModeloService} from './service/terminal-modelo.service';
 import {TipoCategoriaService} from './service/tipo-categoria.service';
 
-
 const app = express();
 // Adiciona parser de JSON para o body das requisições
 app.use(express.json());
@@ -51,7 +50,7 @@ app.use('/api/categoria', categoriaController.router);
 app.use('/api/tipo-categoria', tipoCategoriaController.router);
 
 // Middleware de tratamento centralizado de erros
-import { errorHandlerMiddleware } from './controller/error.middleware';
+import {errorHandlerMiddleware} from './controller/error.middleware';
 app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 3333;

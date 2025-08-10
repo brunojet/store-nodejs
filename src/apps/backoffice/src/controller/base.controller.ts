@@ -1,5 +1,6 @@
-import {Request, Response, Router, NextFunction} from 'express';
-import { asyncHandler } from './async-handler';
+import {NextFunction, Request, Response, Router} from 'express';
+
+import {asyncHandler} from './async-handler';
 
 interface AuthenticatedRequest extends Request {
   userId: string;
@@ -8,8 +9,8 @@ interface AuthenticatedRequest extends Request {
 import {BaseService, Pageable} from '../service/base.service';
 
 export abstract class BaseController<
-  TModel, TCreate, TUpdate, TRepo,
-  TService extends BaseService<TModel, TCreate, TUpdate, TRepo>> {
+    TModel, TCreate, TUpdate, TRepo,
+    TService extends BaseService<TModel, TCreate, TUpdate, TRepo>> {
   public router: Router;
   protected service: TService;
 
@@ -20,17 +21,18 @@ export abstract class BaseController<
   }
 
   protected initRoutes() {
-  this.router.post('/', asyncHandler(this.create.bind(this)));
-  this.router.get('/:id', asyncHandler(this.getById.bind(this)));
-  this.router.put('/:id', asyncHandler(this.update.bind(this)));
-  this.router.delete('/:id', asyncHandler(this.delete.bind(this)));
-  this.router.get('/', asyncHandler(this.getAll.bind(this)));
+    this.router.post('/', asyncHandler(this.create.bind(this)));
+    this.router.get('/:id', asyncHandler(this.getById.bind(this)));
+    this.router.put('/:id', asyncHandler(this.update.bind(this)));
+    this.router.delete('/:id', asyncHandler(this.delete.bind(this)));
+    this.router.get('/', asyncHandler(this.getAll.bind(this)));
   }
 
   getUserId(req: Request): string {
-    const { userId = 'unknown' } = req as AuthenticatedRequest;
+    const {userId = 'unknown'} = req as AuthenticatedRequest;
     if (typeof userId !== 'string') {
-      // Se userId for objeto, tenta pegar .id ou .sub, senão converte para string
+      // Se userId for objeto, tenta pegar .id ou .sub, senão converte para
+      // string
       if (userId && typeof userId === 'object') {
         const obj = userId as Record<string, unknown>;
         return String(obj.id ?? obj.sub ?? JSON.stringify(obj));

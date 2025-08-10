@@ -1,8 +1,6 @@
 import {killPort} from '@nx/node/utils';
 
-declare global {
-  var __TEARDOWN_MESSAGE__: string;
-}
+declare global { var __TEARDOWN_MESSAGE__: string; }
 
 module.exports = async function() {
   // Put clean up logic here (e.g. stopping services, docker-compose, etc.).

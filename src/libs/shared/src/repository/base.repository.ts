@@ -32,17 +32,17 @@ export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
   }
 
   async getById(id: string): Promise<TModel|null> {
-    const result = await this.model.findUnique({where: {id}});
+    const result = await this.model.findUnique({where : {id}});
     return result;
   }
 
   async create(userId: string, data: TCreateInput): Promise<TModel> {
     const prismaData = {
       ...data,
-      criadoPor: userId,
-      atualizadoPor: userId,
+      criadoPor : userId,
+      atualizadoPor : userId,
     };
-    const result = await this.model.create({data: prismaData});
+    const result = await this.model.create({data : prismaData});
     return result;
   }
 
@@ -53,9 +53,10 @@ export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
       ): Promise<TModel> {
     const updateData = {
       ...data,
-      atualizadoPor: userId,
+      atualizadoPor : userId,
     };
-    const result = await this.model.update({where: {id}, data: updateData as TUpdateInput});
+    const result = await this.model.update(
+        {where : {id}, data : updateData as TUpdateInput});
     return result;
   }
 

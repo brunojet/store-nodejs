@@ -1,4 +1,5 @@
-import {Request, Response, Router} from 'express';
+import {Request, Response, Router, NextFunction} from 'express';
+import { asyncHandler } from './async-handler';
 
 interface AuthenticatedRequest extends Request {
   userId: string;
@@ -19,11 +20,11 @@ export abstract class BaseController<
   }
 
   protected initRoutes() {
-    this.router.post('/', this.create.bind(this));
-    this.router.get('/:id', this.getById.bind(this));
-    this.router.put('/:id', this.update.bind(this));
-    this.router.delete('/:id', this.delete.bind(this));
-    this.router.get('/', this.getAll.bind(this));
+  this.router.post('/', asyncHandler(this.create.bind(this)));
+  this.router.get('/:id', asyncHandler(this.getById.bind(this)));
+  this.router.put('/:id', asyncHandler(this.update.bind(this)));
+  this.router.delete('/:id', asyncHandler(this.delete.bind(this)));
+  this.router.get('/', asyncHandler(this.getAll.bind(this)));
   }
 
   getUserId(req: Request): string {
@@ -39,62 +40,42 @@ export abstract class BaseController<
     return userId;
   }
 
-  async create(req: Request, res: Response) {
-    try {
-      const userId = this.getUserId(req);
-      const created = await this.service.create(userId, req.body);
-      res.status(201).json(created);
-    } catch (err) {
-      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
-    }
+  async create(req: Request, res: Response, next: NextFunction) {
+    const userId = this.getUserId(req);
+    const created = await this.service.create(userId, req.body);
+    res.status(201).json(created);
   }
 
-  async getById(req: Request, res: Response) {
-    try {
-      const {id} = req.params;
-      const item = await this.service.getById(id);
-      if (!item)
-        return res.status(404).json({error : 'Not found'});
-      res.json(item);
-    } catch (err) {
-      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
-    }
+  async getById(req: Request, res: Response, next: NextFunction) {
+    const {id} = req.params;
+    const item = await this.service.getById(id);
+    if (!item)
+      return res.status(404).json({error : 'Not found'});
+    res.json(item);
   }
 
-  async update(req: Request, res: Response) {
-    try {
-      const {id} = req.params;
-      const userId = this.getUserId(req);
-      const updated = await this.service.update(userId, id, req.body);
-      res.json(updated);
-    } catch (err) {
-      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
-    }
+  async update(req: Request, res: Response, next: NextFunction) {
+    const {id} = req.params;
+    const userId = this.getUserId(req);
+    const updated = await this.service.update(userId, id, req.body);
+    res.json(updated);
   }
 
-  async delete(req: Request, res: Response) {
-    try {
-      const {id} = req.params;
-      const deleted = await this.service.delete(id);
-      res.json(deleted);
-    } catch (err) {
-      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
-    }
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const {id} = req.params;
+    const deleted = await this.service.delete(id);
+    res.json(deleted);
   }
 
-  async getAll(req: Request, res: Response) {
-    try {
-      const {page = 1, size = 20, ...rawFilter} = req.query;
-      // Converte todos os valores do filtro para string (ou outro tipo esperado)
-      const filter =
-          Object.fromEntries(Object.entries(rawFilter).map(
-              ([ k, v ]) => [k, typeof v === 'string' ? v : String(v)])) as
-          Partial<TModel>;
-      const result: Pageable<TModel> = await this.service.getAll(
-          {filter, page : Number(page), size : Number(size)});
-      res.json(result);
-    } catch (err) {
-      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
-    }
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    const {page = 1, size = 20, ...rawFilter} = req.query;
+    // Converte todos os valores do filtro para string (ou outro tipo esperado)
+    const filter =
+        Object.fromEntries(Object.entries(rawFilter).map(
+            ([ k, v ]) => [k, typeof v === 'string' ? v : String(v)])) as
+        Partial<TModel>;
+    const result: Pageable<TModel> = await this.service.getAll(
+        {filter, page : Number(page), size : Number(size)});
+    res.json(result);
   }
 }

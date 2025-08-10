@@ -50,7 +50,9 @@ app.use('/api/terminal-modelo', terminalModeloController.router);
 app.use('/api/categoria', categoriaController.router);
 app.use('/api/tipo-categoria', tipoCategoriaController.router);
 
-// Removed mock endpoint. All RESTful endpoints are now handled by controllers.
+// Middleware de tratamento centralizado de erros
+import { errorHandlerMiddleware } from './controller/error.middleware';
+app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 3333;
 const server = app.listen(

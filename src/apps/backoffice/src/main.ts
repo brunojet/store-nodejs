@@ -3,6 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
+import {errorHandlerMiddleware} from '@infra/controller';
 import {
   CategoriaRepository,
   TerminalModeloRepository,
@@ -50,7 +51,6 @@ app.use('/api/categoria', categoriaController.router);
 app.use('/api/tipo-categoria', tipoCategoriaController.router);
 
 // Middleware de tratamento centralizado de erros
-import {errorHandlerMiddleware} from './controller/error.middleware';
 app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 3333;

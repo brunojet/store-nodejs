@@ -1,3 +1,4 @@
+import {BaseController} from '@infra/controller';
 import {
   TipoCategoriaCreateModel,
   TipoCategoriaModel,
@@ -6,8 +7,6 @@ import {
 } from '@shared';
 
 import {TipoCategoriaService} from '../service/tipo-categoria.service';
-
-import {BaseController} from './base.controller';
 
 export class TipoCategoriaController extends BaseController<
     TipoCategoriaModel, TipoCategoriaCreateModel, TipoCategoriaUpdateModel,

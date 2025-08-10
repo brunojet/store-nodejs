@@ -1,11 +1,10 @@
+import {BaseService} from '@infra/service';
 import {
   TerminalModeloCreateModel,
   TerminalModeloModel,
   TerminalModeloRepository,
   TerminalModeloUpdateModel
 } from '@shared';
-
-import {BaseService} from './base.service';
 
 export class TerminalModeloService extends
     BaseService<TerminalModeloModel, TerminalModeloCreateModel,

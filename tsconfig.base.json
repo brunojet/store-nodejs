@@ -16,6 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@infra": ["src/libs/infra/src/index.ts"],
+      "@infra/service": ["src/libs/infra/src/service/index.ts"],
+      "@infra/controller": ["src/libs/infra/src/controller/index.ts"],
       "@shared": ["src/libs/shared/src/index.ts"]
     },
     "strict": true,

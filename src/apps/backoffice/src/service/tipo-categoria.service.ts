@@ -1,11 +1,10 @@
+import {BaseService} from '@infra/service';
 import {
   TipoCategoriaCreateModel,
   TipoCategoriaModel,
   TipoCategoriaRepository,
   TipoCategoriaUpdateModel
 } from '@shared';
-
-import {BaseService} from './base.service';
 
 export class TipoCategoriaService extends
     BaseService<TipoCategoriaModel, TipoCategoriaCreateModel,

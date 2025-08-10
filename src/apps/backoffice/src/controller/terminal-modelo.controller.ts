@@ -1,3 +1,4 @@
+import {BaseController} from '@infra/controller';
 import {
   TerminalModeloCreateModel,
   TerminalModeloModel,
@@ -6,8 +7,6 @@ import {
 } from '@shared';
 
 import {TerminalModeloService} from '../service/terminal-modelo.service';
-
-import {BaseController} from './base.controller';
 
 export class TerminalModeloController extends BaseController<
     TerminalModeloModel, TerminalModeloCreateModel, TerminalModeloUpdateModel,

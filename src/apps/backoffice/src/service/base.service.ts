@@ -1,6 +1,9 @@
 // Função genérica para omitir campos nulos/undefined
 export function omitNulls<T>(obj: T): any {
   if (Array.isArray(obj)) {
+    if (obj.length === 0) {
+      return undefined; // Omit empty arrays
+    }
     return obj.map(omitNulls);
   }
   if (typeof obj === 'object' && obj !== null) {

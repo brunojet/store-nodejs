@@ -107,7 +107,7 @@ model Categoria {
     criadoPor                  String                       @map("criado_por")
     atualizadoPor              String                       @map("atualizado_por")
     nome                       String
-    tipoCategoriaId            String                       @map("tipo_classificacao_id")
+    tipoCategoriaId            String                       @map("tipo_categoria_id")
     tipoCategoria              TipoCategoria                @relation(fields: [tipoCategoriaId], references: [id])
     paiId                      String?                      @map("pai_id")
     pai                        Categoria?                   @relation("CategoriaPai", fields: [paiId], references: [id])
@@ -115,6 +115,8 @@ model Categoria {
     CategoriaAplicativoVinculo CategoriaAplicativoVinculo[]
 
     @@unique([nome, tipoCategoriaId])
+    @@index([paiId])
+    @@index([tipoCategoriaId])
     @@map("categoria")
 }
 

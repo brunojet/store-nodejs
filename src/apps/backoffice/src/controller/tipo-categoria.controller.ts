@@ -1,9 +1,15 @@
-import { TipoCategoriaService } from '../service/tipo-categoria.service';
-import { TipoCategoriaModel, TipoCategoriaCreateModel, TipoCategoriaUpdateModel } from '@shared';
-import { BaseController } from './base.controller';
+import {
+  TipoCategoriaCreateModel,
+  TipoCategoriaModel,
+  TipoCategoriaUpdateModel
+} from '@shared';
 
-export class TipoCategoriaController extends BaseController<TipoCategoriaModel, TipoCategoriaCreateModel, TipoCategoriaUpdateModel, TipoCategoriaService> {
-  constructor(service: TipoCategoriaService) {
-    super(service);
-  }
+import {TipoCategoriaService} from '../service/tipo-categoria.service';
+
+import {BaseController} from './base.controller';
+
+export class TipoCategoriaController extends
+    BaseController<TipoCategoriaModel, TipoCategoriaCreateModel,
+                   TipoCategoriaUpdateModel, TipoCategoriaService> {
+  constructor(service: TipoCategoriaService) { super(service); }
 }

@@ -16,13 +16,10 @@ export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
   protected prisma = getPrismaClient();
   protected model: IPrismaModel<TModel, TCreateInput, TUpdateInput, TWhereInput,
                                 TFindManyArgs>;
-  protected userId: string;
 
   constructor(model: IPrismaModel<TModel, TCreateInput, TUpdateInput,
-                                  TWhereInput, TFindManyArgs>,
-              userId = "unknown") {
+                                  TWhereInput, TFindManyArgs>) {
     this.model = model;
-    this.userId = userId;
   }
 
   async getAll(params?: TFindManyArgs): Promise<TModel[]> {
@@ -37,25 +34,28 @@ export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
     return this.model.findUnique({where : {id}});
   }
 
-  async create(data: TCreateInput): Promise<TModel> {
+  async create(userId: string, data: TCreateInput): Promise<TModel> {
     const now = new Date();
-    // Converte datas para string ISO, compatível com Prisma
     const prismaData = {
       ...data,
       criadoEm : now,
       atualizadoEm : now,
-      criadoPor : this.userId,
-      atualizadoPor : this.userId,
+      criadoPor : userId,
+      atualizadoPor : userId,
     };
     return this.model.create({data : prismaData});
   }
 
-  async update(id: string, data: TUpdateInput): Promise<TModel> {
+  async update(
+      userId: string,
+      id: string,
+      data: TUpdateInput,
+      ): Promise<TModel> {
     const now = new Date();
     const updateData = {
       ...data,
       atualizadoEm : now,
-      atualizadoPor : this.userId,
+      atualizadoPor : userId,
     };
     return this.model.update({where : {id}, data : updateData as TUpdateInput});
   }

@@ -1,9 +1,15 @@
-import { CategoriaService } from '../service/categoria.service';
-import { CategoriaModel, CategoriaCreateModel, CategoriaUpdateModel } from '@shared';
-import { BaseController } from './base.controller';
+import {
+  CategoriaCreateModel,
+  CategoriaModel,
+  CategoriaUpdateModel
+} from '@shared';
 
-export class CategoriaController extends BaseController<CategoriaModel, CategoriaCreateModel, CategoriaUpdateModel, CategoriaService> {
-  constructor(service: CategoriaService) {
-    super(service);
-  }
+import {CategoriaService} from '../service/categoria.service';
+
+import {BaseController} from './base.controller';
+
+export class CategoriaController extends
+    BaseController<CategoriaModel, CategoriaCreateModel, CategoriaUpdateModel,
+                   CategoriaService> {
+  constructor(service: CategoriaService) { super(service); }
 }

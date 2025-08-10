@@ -12,12 +12,11 @@ const prisma = getPrismaClient();
 export class TerminalModeloRepository extends BaseRepository<
     TerminalModelo, TerminalModeloCreateModel, TerminalModeloUpdateModel,
     Prisma.TerminalModeloWhereInput, Prisma.TerminalModeloFindManyArgs> {
-  constructor(userId: string|undefined) {
-    super(prisma.terminalModelo as unknown as
-              IPrismaModel<TerminalModelo, TerminalModeloCreateModel,
-                           TerminalModeloUpdateModel,
-                           Prisma.TerminalModeloWhereInput,
-                           Prisma.TerminalModeloFindManyArgs>,
-          userId);
+  constructor() {
+    super(
+        prisma.terminalModelo as unknown as
+        IPrismaModel<TerminalModelo, TerminalModeloCreateModel,
+                     TerminalModeloUpdateModel, Prisma.TerminalModeloWhereInput,
+                     Prisma.TerminalModeloFindManyArgs>);
   }
 }

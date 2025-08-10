@@ -4,7 +4,7 @@ import {Prisma, TipoCategoria} from './prisma/generated';
 import {
   TipoCategoriaCreateModel,
   TipoCategoriaUpdateModel
-} from './tipo-categoria.model';
+} from '../domain/tipo-categoria.model';
 
 export class TipoCategoriaRepository extends BaseRepository<
     TipoCategoria, TipoCategoriaCreateModel, TipoCategoriaUpdateModel,

@@ -1,5 +1,5 @@
 // Remove propriedades do objeto de forma imutável
-import {IHasAudit} from './base.model';
+import {IHasAudit} from '../domain/base.model';
 import {getPrismaClient} from './prisma-client-singleton';
 
 function omitProps<T extends object, K extends keyof T>(obj: T, props: K[]):

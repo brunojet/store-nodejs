@@ -4,7 +4,7 @@ import {Prisma, TerminalModelo} from './prisma/generated';
 import {
   TerminalModeloCreateModel,
   TerminalModeloUpdateModel
-} from './terminal-modelo.model';
+} from '../domain/terminal-modelo.model';
 
 const prisma = getPrismaClient();
 

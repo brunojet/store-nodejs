@@ -1,5 +1,5 @@
 import {BaseRepository, IPrismaModel} from './base.repository';
-import {CategoriaCreateModel, CategoriaUpdateModel} from './categoria.model';
+import {CategoriaCreateModel, CategoriaUpdateModel} from '../domain/categoria.model';
 import {getPrismaClient} from './prisma-client-singleton';
 import {Categoria, Prisma} from './prisma/generated';
 

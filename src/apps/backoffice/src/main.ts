@@ -3,7 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
-import {shared, TerminalModeloRepository} from '@shared';
+import {TerminalModeloRepository} from '@shared';
 import express from 'express';
 import * as path from 'path';
 

@@ -1,4 +1,3 @@
-export * from './lib/shared';
 export * from './repository/base.model';
 export * from './repository/base.repository';
 export * from './repository/terminal-modelo.model';

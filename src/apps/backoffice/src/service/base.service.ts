@@ -45,25 +45,27 @@ export abstract class BaseService<TModel, TCreate, TUpdate,
     filter?: Partial<TModel>;
     page?: number;
     pageSize?: number;
-    include?: any;
-    [key: string]: any;
+    include?: any; [key: string] : any;
   }): Promise<Pageable<TModel>> {
-    const { filter = {}, page = 0, pageSize = 20, include, ...rest } = params || {};
+    const {filter = {}, page = 0, pageSize = 20, include, ...rest} =
+        params || {};
     if (page < 0 || pageSize < 1) {
-      throw new Error(`Invalid pagination params: page=${page}, pageSize=${pageSize}`);
+      throw new Error(
+          `Invalid pagination params: page=${page}, pageSize=${pageSize}`);
     }
     const skip = page * pageSize;
     try {
       const prismaArgs: any = {
-        where: filter,
+        where : filter,
         skip,
-        take: pageSize,
+        take : pageSize,
         ...rest,
       };
-      if (include) prismaArgs.include = include;
+      if (include)
+        prismaArgs.include = include;
       const items = await this.repo.getAll(prismaArgs);
       const total = await this.repo.count(filter);
-      return omitNulls({ items, total, page, pageSize: items.length });
+      return omitNulls({items, total, page, pageSize : items.length});
     } catch (error) {
       throw error;
     }

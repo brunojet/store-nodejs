@@ -22,15 +22,17 @@ export class CategoriaService extends
                 CategoriaRepository> {
   constructor(repo: CategoriaRepository) { super(repo); }
 
-  async getAll(params?: {filter?: Partial<CategoriaModel>; page?: number; pageSize?: number}) {
+  async getAll(
+      params
+      ?: {filter?: Partial<CategoriaModel>; page?: number; pageSize?: number}) {
     // Sempre inclui filhos, pai, tipoCategoria nas relações
     const prismaParams = {
       ...params,
       // Adiciona configuração de include para relações
-      include: {
-        filhos: true,
-        pai: true,
-        tipoCategoria: true,
+      include : {
+        filhos : true,
+        pai : true,
+        tipoCategoria : true,
       },
     };
     return super.getAll(prismaParams);

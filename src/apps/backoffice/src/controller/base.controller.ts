@@ -71,15 +71,19 @@ export abstract class BaseController<
   }
 
   async getAll(req: Request, res: Response, next: NextFunction) {
-    const {page = 0, pageSize = 20, ...rawFilter} = req.query;
+    // Extrai paginação
+    const {page = 0, pageSize = 20, ...filterParams} = req.query;
     const pageNum = Math.max(0, Number(page));
     const pageSizeNum = Math.max(1, Number(pageSize));
-    const filter =
-        Object.fromEntries(Object.entries(rawFilter).map(
-            ([ k, v ]) => [k, typeof v === 'string' ? v : String(v)])) as
-        Partial<TModel>;
-    const result: Pageable<TModel> = await this.service.getAll(
-        {filter, page : pageNum, pageSize : pageSizeNum});
+    // Todos os demais parâmetros viram filtro genérico
+    const filter = Object.fromEntries(
+        Object.entries(filterParams)
+            .map(([ k, v ]) => [k, typeof v === 'string' ? v : String(v)]));
+    const result: Pageable<TModel> = await this.service.getAll({
+      filter : filter as Partial<TModel>,
+      page : pageNum,
+      pageSize : pageSizeNum
+    });
     res.json(result);
   }
 }

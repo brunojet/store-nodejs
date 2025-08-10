@@ -259,7 +259,7 @@ paths:
     get:
       tags: [categoria]
       summary: Listar Categorias
-      description: Retorna uma lista paginada de categorias.
+      description: Retorna uma lista paginada de categorias, podendo filtrar por tipoCategoria. Relações pai e filhos são limitadas a 1 nível para evitar recursão infinita.
       operationId: listCategorias
       parameters:
         - in: query
@@ -270,6 +270,11 @@ paths:
           name: pageSize
           schema:
             type: integer
+        - in: query
+          name: tipoCategoriaId
+          schema:
+            type: string
+          description: Filtra categorias pelo tipoCategoriaId
       responses:
         '200':
           description: Lista de Categorias

@@ -1,37 +1,72 @@
-# Guia para Criação de Projeto Modular com Nx
-
-## 1. Instalar Nx CLI (opcional)
-```
 npm install -g nx
-```
-
-## 2. Criar o workspace Nx
-```
 npx create-nx-workspace@latest
-```
-Siga as instruções para nomear o workspace e escolher o layout (geralmente "apps").
-
-## 3. Entrar na pasta do workspace
-```
 cd nome-do-workspace
-```
-
-## 4. Criar um app Node.js chamado backoffice
-```
 npx nx generate @nx/node:application backoffice --directory=src/apps
-```
-
-## 5. Criar uma lib chamada shared com alias @shared
-```
 npx nx generate @nx/node:library shared --directory=src/libs --importPath=@shared
-```
-
-## 6. Build dos projetos
-```
 npx nx build backoffice
 npx nx build shared
+
+# Guia de Criação do Projeto Nx
+
+Este documento lista os comandos utilizados para criar o monorepo Nx, o app backoffice e a lib shared, além dos parâmetros relevantes.
+
+## 1. Criar o workspace Nx
+
+```sh
+npx create-nx-workspace@latest nome-do-projeto --preset=ts --packageManager=npm --nxCloud=false
 ```
+
+## 2. Criar o app backoffice
+
+```sh
+npx nx generate @nx/node:app backoffice --directory=src/apps/backoffice
+```
+
+## 3. Criar a lib shared
+
+```sh
+npx nx generate @nx/node:lib shared --directory=src/libs/shared --importPath=@shared
+```
+O parâmetro `--importPath=@shared` permite usar o alias `@shared` nas importações.
+
+## 4. Instalar dependências úteis
+
+```sh
+npm install express @types/express
+npm install --save-dev clang-format
+```
+
+## 5. Configurações recomendadas
+
+- Adicionar "type": "module" no package.json
+- Configurar paths e references nos tsconfig
+- Ignorar prisma/generated e dist no lint (eslint.config.mjs)
+- Adicionar launcher de debug em .vscode/launch.json
+- Adicionar script lint no package.json
+
+## 6. Scripts úteis
+
+```json
+"scripts": {
+	"start": "nx serve backoffice",
+	"lint": "nx lint",
+	"clang": "node scripts/clang-all.js"
+}
+```
+
+## 7. Ignorar arquivos no lint
+
+No arquivo `eslint.config.mjs`:
+```js
+{
+	ignores: ['**/dist', '**/prisma/generated'],
+}
+```
+
+## 8. Debug
+
+Use o launcher "Debug Nx Backoffice" no VS Code para debugar o app.
 
 ---
 
-Se quiser o documento em outro formato ou com mais detalhes, só avisar!
+Este guia pode ser adaptado conforme novas libs/apps forem criados.

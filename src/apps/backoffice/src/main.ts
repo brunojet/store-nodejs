@@ -13,9 +13,15 @@ const terminalModeloRepository = new TerminalModeloRepository(null);
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-app.get(
-    '/api',
-    (req, res) => { res.send({message : terminalModeloRepository.getAll()}); });
+app.get('/api', async (req, res) => {
+  try {
+    const response = await terminalModeloRepository.getAll();
+    res.send({message : response});
+  } catch (error) {
+    res.status(500).send(
+        {error : 'Erro ao buscar dados', details : error?.message});
+  }
+});
 
 const port = process.env.PORT || 3333;
 const server = app.listen(

@@ -1,10 +1,14 @@
 import {Request, Response, Router} from 'express';
 
+interface AuthenticatedRequest extends Request {
+  userId: string;
+}
+
 import {BaseService, Pageable} from '../service/base.service';
 
 export abstract class BaseController<
-    TModel, TCreate, TUpdate,
-    TService extends BaseService<TModel, TCreate, TUpdate, any>> {
+  TModel, TCreate, TUpdate, TRepo,
+  TService extends BaseService<TModel, TCreate, TUpdate, TRepo>> {
   public router: Router;
   protected service: TService;
 
@@ -22,9 +26,22 @@ export abstract class BaseController<
     this.router.get('/', this.getAll.bind(this));
   }
 
+  getUserId(req: Request): string {
+    const { userId = 'unknown' } = req as AuthenticatedRequest;
+    if (typeof userId !== 'string') {
+      // Se userId for objeto, tenta pegar .id ou .sub, senão converte para string
+      if (userId && typeof userId === 'object') {
+        const obj = userId as Record<string, unknown>;
+        return String(obj.id ?? obj.sub ?? JSON.stringify(obj));
+      }
+      return String(userId);
+    }
+    return userId;
+  }
+
   async create(req: Request, res: Response) {
     // Supondo que o userId está em req.userId (middleware deve garantir isso)
-    const userId = (req as any).userId || 'unknown';
+    const userId = this.getUserId(req);
     const created = await this.service.create(userId, req.body);
     res.status(201).json(created);
   }
@@ -39,7 +56,7 @@ export abstract class BaseController<
 
   async update(req: Request, res: Response) {
     const {id} = req.params;
-    const userId = (req as any).userId || 'unknown';
+    const userId = this.getUserId(req);
     const updated = await this.service.update(userId, id, req.body);
     res.json(updated);
   }

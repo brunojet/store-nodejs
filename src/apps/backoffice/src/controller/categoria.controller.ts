@@ -7,9 +7,15 @@ import {
 import {CategoriaService} from '../service/categoria.service';
 
 import {BaseController} from './base.controller';
+import { CategoriaRepository } from '@shared';
 
 export class CategoriaController extends
-    BaseController<CategoriaModel, CategoriaCreateModel, CategoriaUpdateModel,
-                   CategoriaService> {
+    BaseController<
+      CategoriaModel,
+      CategoriaCreateModel,
+      CategoriaUpdateModel,
+      CategoriaRepository,
+      CategoriaService
+    > {
   constructor(service: CategoriaService) { super(service); }
 }

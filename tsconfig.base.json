@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@infra": ["src/libs/infra/src/index.ts"],
       "@shared": ["src/libs/shared/src/index.ts"]
     },
     "strict": true,

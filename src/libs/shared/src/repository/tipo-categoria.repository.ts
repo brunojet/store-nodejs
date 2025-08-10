@@ -1,9 +1,10 @@
+import {BaseRepository, IPrismaModel} from '@infra/repository';
+
 import {
   TipoCategoriaCreateModel,
   TipoCategoriaUpdateModel
 } from '../domain/tipo-categoria.model';
 
-import {BaseRepository, IPrismaModel} from './base.repository';
 import {getPrismaClient} from './prisma-client-singleton';
 import {Prisma, TipoCategoria} from './prisma/generated';
 

@@ -1,9 +1,10 @@
+import {BaseRepository, IPrismaModel} from '@infra/repository';
+
 import {
   TerminalModeloCreateModel,
   TerminalModeloUpdateModel
 } from '../domain/terminal-modelo.model';
 
-import {BaseRepository, IPrismaModel} from './base.repository';
 import {getPrismaClient} from './prisma-client-singleton';
 import {Prisma, TerminalModelo} from './prisma/generated';
 

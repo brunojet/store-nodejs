@@ -10,15 +10,29 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@infra": ["src/libs/infra/src/index.ts"],
-      "@infra/service": ["src/libs/infra/src/service/index.ts"],
-      "@infra/controller": ["src/libs/infra/src/controller/index.ts"],
-      "@shared": ["src/libs/shared/src/index.ts"]
+      "@infra": [
+        "src/libs/infra/src/index.ts"
+      ],
+      "@infra/service": [
+        "src/libs/infra/src/service/index.ts"
+      ],
+      "@infra/controller": [
+        "src/libs/infra/src/controller/index.ts"
+      ],
+      "@infra/repository": [
+        "src/libs/infra/src/repository/index.ts"
+      ],
+      "@shared": [
+        "src/libs/shared/src/index.ts"
+      ],
     },
     "strict": true,
     "noImplicitAny": true,
@@ -26,5 +40,8 @@
     "noImplicitThis": true,
     "alwaysStrict": true
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

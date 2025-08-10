@@ -1,18 +1,15 @@
-import {getPrismaClient} from './prisma-client-singleton';
-
 export interface IPrismaModel<TModel, TCreateInput, TUpdateInput, TWhereInput,
                               TFindManyArgs> {
   findMany(params?: TFindManyArgs): Promise<TModel[]>;
   findUnique(params: {where: {id: string}}): Promise<TModel|null>;
   create(params: {data: TCreateInput}): Promise<TModel>;
-  update(params: {where: {id: string}, data: TUpdateInput}): Promise<TModel>;
+  update(params: {where: {id: string}; data : TUpdateInput;}): Promise<TModel>;
   delete(params: {where: {id: string}}): Promise<TModel>;
   count(params?: {where?: TWhereInput}): Promise<number>;
 }
 
 export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
                                      TWhereInput, TFindManyArgs> {
-  protected prisma = getPrismaClient();
   protected model: IPrismaModel<TModel, TCreateInput, TUpdateInput, TWhereInput,
                                 TFindManyArgs>;
 
@@ -46,17 +43,16 @@ export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
     return result;
   }
 
-  async update(
-      userId: string,
-      id: string,
-      data: TUpdateInput,
-      ): Promise<TModel> {
+  async update(userId: string, id: string,
+               data: TUpdateInput): Promise<TModel> {
     const updateData = {
       ...data,
       atualizadoPor : userId,
     };
-    const result = await this.model.update(
-        {where : {id}, data : updateData as TUpdateInput});
+    const result = await this.model.update({
+      where : {id},
+      data : updateData as TUpdateInput,
+    });
     return result;
   }
 

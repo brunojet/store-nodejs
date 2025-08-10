@@ -1,31 +1,32 @@
 {
-  "name": "@store-nodejs/source",
+  "name": "@store/source",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {},
   "private": true,
   "dependencies": {
-    "@prisma/client": "^6.13.0",
     "axios": "^1.6.0",
     "express": "^4.21.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
-    "@nx/esbuild": "21.3.11",
     "@nx/eslint": "21.3.11",
     "@nx/eslint-plugin": "21.3.11",
+    "@nx/express": "21.3.11",
     "@nx/jest": "21.3.11",
     "@nx/js": "21.3.11",
     "@nx/node": "21.3.11",
+    "@nx/web": "21.3.11",
+    "@nx/webpack": "21.3.11",
     "@nx/workspace": "21.3.11",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
+    "@svgr/webpack": "^8.0.1",
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
-    "@swc/jest": "~0.2.38",
     "@types/express": "^4.17.21",
     "@types/jest": "^30.0.0",
     "@types/node": "~18.16.9",
-    "esbuild": "^0.19.2",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jest": "^30.0.2",
@@ -34,17 +35,13 @@
     "jsonc-eslint-parser": "^2.1.0",
     "nx": "21.3.11",
     "prettier": "^2.6.2",
-    "prisma": "^6.13.0",
+    "react-refresh": "^0.10.0",
     "ts-jest": "^29.4.0",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
     "typescript": "~5.8.2",
-    "typescript-eslint": "^8.29.0"
-  },
-  "workspaces": [
-    "apps/*",
-    "src/apps/*",
-    "src/libs",
-    "src/libs/shared"
-  ]
+    "typescript-eslint": "^8.29.0",
+    "webpack": "^5.101.0",
+    "webpack-cli": "^5.1.4"
+  }
 }

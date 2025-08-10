@@ -1,23 +1,18 @@
-import {IHasAudit} from './base.model';
+import {IHasAudit, IHasId} from './base.model';
 
-// Models e interfaces para TerminalModelo
 export interface TerminalModeloModel extends IHasAudit {
-  id: string;
   nome: string;
   descricao?: string;
 }
 
-export interface TerminalModeloCreateModel extends IHasAudit {
+export interface TerminalModeloCreateModel {
   nome: string;
   descricao?: string;
 }
 
-export interface TerminalModeloUpdateModel extends IHasAudit {
-  id: string;
+export interface TerminalModeloUpdateModel extends IHasId {
   nome?: string;
   descricao?: string;
 }
 
-export interface TerminalModeloGetModel {
-  id: string;
-}
+export type TerminalModeloGetModel = IHasId

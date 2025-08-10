@@ -1,6 +1,9 @@
-// Interfaces base para models de auditoria e timestamps
 
-export interface IHasAudit {
+export interface IHasId {
+  id: string;
+}
+
+export interface IHasAudit extends IHasId {
   criadoEm?: Date;
   atualizadoEm?: Date;
   criadoPor?: string;

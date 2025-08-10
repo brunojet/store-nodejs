@@ -1,13 +1,5 @@
 // Remove propriedades do objeto de forma imutável
-import {IHasAudit} from '../domain/base.model';
 import {getPrismaClient} from './prisma-client-singleton';
-
-function omitProps<T extends object, K extends keyof T>(obj: T, props: K[]):
-    Omit<T, K> {
-  const clone = {...obj};
-  props.forEach((p) => { delete clone[p]; });
-  return clone;
-}
 
 export interface IPrismaModel<TModel, TCreateInput, TUpdateInput, TWhereInput,
                               TFindManyArgs> {
@@ -19,9 +11,8 @@ export interface IPrismaModel<TModel, TCreateInput, TUpdateInput, TWhereInput,
   count(params?: {where?: TWhereInput}): Promise<number>;
 }
 
-export abstract class BaseRepository<
-    TModel, TCreateInput extends IHasAudit, TUpdateInput extends
-        IHasAudit, TWhereInput, TFindManyArgs> {
+export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
+                                     TWhereInput, TFindManyArgs> {
   protected prisma = getPrismaClient();
   protected model: IPrismaModel<TModel, TCreateInput, TUpdateInput, TWhereInput,
                                 TFindManyArgs>;
@@ -61,9 +52,8 @@ export abstract class BaseRepository<
 
   async update(id: string, data: TUpdateInput): Promise<TModel> {
     const now = new Date();
-    const rest = omitProps(data, [ "criadoEm", "criadoPor" ]);
     const updateData = {
-      ...rest,
+      ...data,
       atualizadoEm : now,
       atualizadoPor : this.userId,
     };

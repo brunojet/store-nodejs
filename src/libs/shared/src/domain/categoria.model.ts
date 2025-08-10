@@ -1,23 +1,18 @@
-import {IHasAudit} from './base.model';
+import {IHasAudit, IHasId} from './base.model';
 
-// Models e interfaces para Categoria
 export interface CategoriaModel extends IHasAudit {
-  id: string;
   nome: string;
   descricao?: string;
 }
 
-export interface CategoriaCreateModel extends IHasAudit {
+export interface CategoriaCreateModel {
   nome: string;
   descricao?: string;
 }
 
-export interface CategoriaUpdateModel extends IHasAudit {
-  id: string;
+export interface CategoriaUpdateModel extends IHasId {
   nome?: string;
   descricao?: string;
 }
 
-export interface CategoriaGetModel {
-  id: string;
-}
+export type CategoriaGetModel = IHasId

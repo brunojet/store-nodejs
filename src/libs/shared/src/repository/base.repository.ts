@@ -1,4 +1,3 @@
-// Remove propriedades do objeto de forma imutável
 import {getPrismaClient} from './prisma-client-singleton';
 
 export interface IPrismaModel<TModel, TCreateInput, TUpdateInput, TWhereInput,
@@ -23,27 +22,28 @@ export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
   }
 
   async getAll(params?: TFindManyArgs): Promise<TModel[]> {
-    return this.model.findMany(params);
+    const result = await this.model.findMany(params);
+    return result;
   }
 
   async count(where?: TWhereInput): Promise<number> {
-    return this.model.count({where});
+    const result = await this.model.count({where});
+    return result;
   }
 
   async getById(id: string): Promise<TModel|null> {
-    return this.model.findUnique({where : {id}});
+    const result = await this.model.findUnique({where: {id}});
+    return result;
   }
 
   async create(userId: string, data: TCreateInput): Promise<TModel> {
-    const now = new Date();
     const prismaData = {
       ...data,
-      criadoEm : now,
-      atualizadoEm : now,
-      criadoPor : userId,
-      atualizadoPor : userId,
+      criadoPor: userId,
+      atualizadoPor: userId,
     };
-    return this.model.create({data : prismaData});
+    const result = await this.model.create({data: prismaData});
+    return result;
   }
 
   async update(
@@ -51,13 +51,12 @@ export abstract class BaseRepository<TModel, TCreateInput, TUpdateInput,
       id: string,
       data: TUpdateInput,
       ): Promise<TModel> {
-    const now = new Date();
     const updateData = {
       ...data,
-      atualizadoEm : now,
-      atualizadoPor : userId,
+      atualizadoPor: userId,
     };
-    return this.model.update({where : {id}, data : updateData as TUpdateInput});
+    const result = await this.model.update({where: {id}, data: updateData as TUpdateInput});
+    return result;
   }
 
   async delete(id: string): Promise<TModel> {

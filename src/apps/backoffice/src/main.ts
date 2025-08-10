@@ -20,7 +20,10 @@ import {CategoriaService} from './service/categoria.service';
 import {TerminalModeloService} from './service/terminal-modelo.service';
 import {TipoCategoriaService} from './service/tipo-categoria.service';
 
+
 const app = express();
+// Adiciona parser de JSON para o body das requisições
+app.use(express.json());
 
 // Instantiate repositories
 const terminalModeloRepository = new TerminalModeloRepository();

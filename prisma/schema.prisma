@@ -65,7 +65,8 @@ model TerminalModelo {
     atualizadoEm           DateTime                 @updatedAt @map("atualizado_em")
     criadoPor              String                   @map("criado_por")
     atualizadoPor          String                   @map("atualizado_por")
-    nome                   String                   @map("nome")
+    nome                   String                   @unique @map("nome")
+    descricao              String?                  @map("descricao")
     configuracaoAplicativo ConfiguracaoAplicativo[]
     catalogoAplicativo     CatalogoAplicativo[]
 
@@ -103,7 +104,7 @@ model Categoria {
     atualizadoEm               DateTime                     @updatedAt @map("atualizado_em")
     criadoPor                  String                       @map("criado_por")
     atualizadoPor              String                       @map("atualizado_por")
-    nome                       String                       @unique
+    nome                       String
     tipoCategoriaId            String                       @map("tipo_classificacao_id")
     tipoCategoria              TipoCategoria                @relation(fields: [tipoCategoriaId], references: [id])
     paiId                      String?                      @map("pai_id")
@@ -111,6 +112,7 @@ model Categoria {
     filhos                     Categoria[]                  @relation("CategoriaPai")
     CategoriaAplicativoVinculo CategoriaAplicativoVinculo[]
 
+    @@unique([nome, tipoCategoriaId])
     @@map("categoria")
 }
 

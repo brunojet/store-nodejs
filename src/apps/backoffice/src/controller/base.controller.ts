@@ -40,42 +40,61 @@ export abstract class BaseController<
   }
 
   async create(req: Request, res: Response) {
-    // Supondo que o userId está em req.userId (middleware deve garantir isso)
-    const userId = this.getUserId(req);
-    const created = await this.service.create(userId, req.body);
-    res.status(201).json(created);
+    try {
+      const userId = this.getUserId(req);
+      const created = await this.service.create(userId, req.body);
+      res.status(201).json(created);
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
+    }
   }
 
   async getById(req: Request, res: Response) {
-    const {id} = req.params;
-    const item = await this.service.getById(id);
-    if (!item)
-      return res.status(404).json({error : 'Not found'});
-    res.json(item);
+    try {
+      const {id} = req.params;
+      const item = await this.service.getById(id);
+      if (!item)
+        return res.status(404).json({error : 'Not found'});
+      res.json(item);
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
+    }
   }
 
   async update(req: Request, res: Response) {
-    const {id} = req.params;
-    const userId = this.getUserId(req);
-    const updated = await this.service.update(userId, id, req.body);
-    res.json(updated);
+    try {
+      const {id} = req.params;
+      const userId = this.getUserId(req);
+      const updated = await this.service.update(userId, id, req.body);
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
+    }
   }
 
   async delete(req: Request, res: Response) {
-    const {id} = req.params;
-    const deleted = await this.service.delete(id);
-    res.json(deleted);
+    try {
+      const {id} = req.params;
+      const deleted = await this.service.delete(id);
+      res.json(deleted);
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
+    }
   }
 
   async getAll(req: Request, res: Response) {
-    const {page = 1, size = 20, ...rawFilter} = req.query;
-    // Converte todos os valores do filtro para string (ou outro tipo esperado)
-    const filter =
-        Object.fromEntries(Object.entries(rawFilter).map(
-            ([ k, v ]) => [k, typeof v === 'string' ? v : String(v)])) as
-        Partial<TModel>;
-    const result: Pageable<TModel> = await this.service.getAll(
-        {filter, page : Number(page), size : Number(size)});
-    res.json(result);
+    try {
+      const {page = 1, size = 20, ...rawFilter} = req.query;
+      // Converte todos os valores do filtro para string (ou outro tipo esperado)
+      const filter =
+          Object.fromEntries(Object.entries(rawFilter).map(
+              ([ k, v ]) => [k, typeof v === 'string' ? v : String(v)])) as
+          Partial<TModel>;
+      const result: Pageable<TModel> = await this.service.getAll(
+          {filter, page : Number(page), size : Number(size)});
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
+    }
   }
 }

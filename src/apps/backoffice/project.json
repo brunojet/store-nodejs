@@ -5,6 +5,33 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}", "{options.outputPath}/main.js"],
+      "options": {
+        "outputPath": "dist/src/apps/backoffice",
+        "main": "src/apps/backoffice/src/main.ts",
+        "tsConfig": "src/apps/backoffice/tsconfig.app.json",
+        "webpackConfig": "src/apps/backoffice/webpack.config.cjs"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": false,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": []
+        },
+        "development": {
+          "optimization": false,
+          "sourceMap": true,
+          "extractLicenses": false,
+          "inspect": true,
+          "fileReplacements": [],
+          "mode": "development"
+        }
+      }
+    },
     "serve": {
       "continuous": true,
       "executor": "@nx/js:node",

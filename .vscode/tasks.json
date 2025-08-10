@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "nx:build:backoffice",
+            "type": "shell",
+            "command": "npx nx build backoffice --configuration=development --skip-nx-cache",
+            "group": "build",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                        "/c"
+                    ]
+                },
+                "env": {
+                    "NODE_ENV": "development"
+                }
+            }
+        }
+    ]
+}

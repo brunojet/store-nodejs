@@ -5,12 +5,27 @@
       "type": "node",
       "request": "launch",
       "name": "Debug Nx Backoffice",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "nx", "serve", "backoffice", "--inspect"
-      ],
+      "program": "${workspaceFolder}/dist/src/apps/backoffice/main.js",
+      "preLaunchTask": "nx:build:backoffice",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "sourceMaps": true,
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMapPathOverrides": {
+        "webpack:///./src/libs/*": "${workspaceFolder}/src/libs/*",
+        "webpack:///./src/apps/backoffice/src/*": "${workspaceFolder}/src/apps/backoffice/src/*",
+        "webpack:///./src/*": "${workspaceFolder}/src/*",
+        "webpack:///./*": "${workspaceFolder}/*",
+        "webpack:///src/*": "${workspaceFolder}/src/*",
+        "webpack:///*": "*"
+      },
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
     }
   ]
 }
